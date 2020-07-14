@@ -1,0 +1,23 @@
+{
+    "kpos": {
+        "ip": "10.1.1.13",
+        "usuario": "sa",
+        "contrasena": "123",
+        "baseDatos": "KPOS",
+        "elegida": ""
+    },
+    "dwh": {
+        "ip": "10.1.1.13",
+        "usuario": "sa",
+        "contrasena": "123",
+        "baseDatos": "dwh",
+        "elegida": ""
+    },
+    "voficiname":{
+        "ip": "10.1.1.13",
+        "usuario": "sa",
+        "contrasena": "123",
+        "baseDatos": "VOFICINAME",
+        "elegida": ""
+    }
+}
