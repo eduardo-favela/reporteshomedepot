@@ -13,7 +13,12 @@
   "dependencies": {
     "admin-lte": "^3.0.5",
     "bootstrap": "^4.5.0",
-    "electron": "^9.1.0",
-    "jquery": "^3.5.1"
+    "dotenv": "^8.2.0",
+    "edit-json-file": "^1.4.0",
+    "jquery": "^3.5.1",
+    "mssql": "^6.2.0"
+  },
+  "devDependencies": {
+    "electron": "^9.1.0"
   }
 }

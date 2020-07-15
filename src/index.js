@@ -1,9 +1,8 @@
-const {app}= require('electron');
-const{BrowserWindow} = require('electron');
+const{BrowserWindow,app} = require('electron');
 const{ipcMain}= require('electron');
 const{Menu} = require('electron');
 
-app.on('ready', ventanaMain)
+app.whenReady().then(requerirIpc)
 
 process.on("uncaughtException", (err) => {
     console.log(err);
@@ -43,9 +42,7 @@ function ventanaMain() {
 
 }
 
-// function requerirIpc() {
-//     require('./bk/ipc/login');
-//     require('./bk/ipc/modulos');
-//     require('./bk/ipc/usuario');
-//     require('./bk/ipc/inicio');
-// }
+function requerirIpc() {
+     require('./bck/ipc/capturareportes.js');
+     ventanaMain();
+}
