@@ -1,6 +1,15 @@
+const setupEvents = require('./../installers/setupEvents')
+if (setupEvents.handleSquirrelEvent()) {
+    // squirrel event handled and app will exit in 1000ms, so don't do anything else
+    return;
+}
+
 const{BrowserWindow,app} = require('electron');
 const{ipcMain}= require('electron');
 const{Menu} = require('electron');
+
+const url = require('url')
+const path = require('path')
 
 app.whenReady().then(requerirIpc)
 
@@ -33,7 +42,12 @@ function ventanaMain() {
             show: false
         })
         mainwindow.webContents.openDevTools()
-    mainwindow.loadFile('frnt/views/capturareportes.html')
+    mainwindow.loadURL(
+        url.format({
+            pathname: path.join(__dirname, 'frnt/views/capturareportes.html'),
+            protocol: 'file:',
+            slashes: true
+        }))
     mainwindow.on('closed', () => { mainwindow = null })
     mainwindow.once('ready-to-show', () => {
         mainwindow.show();

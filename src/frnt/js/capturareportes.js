@@ -5,7 +5,9 @@ ipcRenderer.send('getpventas','')
 let opciones={
 
     url: "../../puntosventa.json",
-  
+
+    adjustWidth: false,
+
     getValue: "nombre",
   
     list: {
@@ -37,6 +39,8 @@ ipcRenderer.on('getplazatipomaqresult',(event,infopventa)=>{
     $("#plaza").empty()
     $("#tipomaq").empty()
     $("#ruta").empty()
+    $("#npventa").empty()
+    $("#npventa").val(infopventa.pventa)
     $("#ruta").val(infopventa.ruta)
     $("#plaza").val(infopventa.plaza)
     $("#tipomaq").val(infopventa.tipomaq)
@@ -54,19 +58,51 @@ function guardar(){
     reporte.quienreporta=$("#quienreporta").val().toString().toUpperCase()
     reporte.npventa=$("#npventa").val().toString().toUpperCase()
     reporte.pventa=$("#pventa").val().toString().toUpperCase()
-    console.log(reporte)
     ipcRenderer.send('guardareporte',reporte)
 }
 function limpiar(){
-    $("#plaza").clear()
-    $("#tipomaq").clear()
-    $("#ruta").clear()
-    $("#observaciones").clear()
-    $("#tiporeporta").clear()
-    $("#aquienreporta").clear()
-    $("#telefono").clear()
-    $("#quienreporta").clear()
-    $("#npventa").clear()
-    $("#pventa").clear()
+    $("#plaza").val("")
+    $("#tipomaq").val("")
+    $("#ruta").val("")
+    $("#observaciones").val("")
+    $("#tiporeporta").val("seleccionar");
+    $("#aquienreporta").val("")
+    $("#telefono").val("")
+    $("#quienreporta").val("")
+    $("#npventa").val("")
+    $("#pventa").val("")
     $("#quienreporta").focus()
 }
+
+function continuarcaptura(){
+    $('#Confirmaregistro').modal('toggle');
+    limpiar()
+}
+
+function cerrarmodal(){
+    $('#Confirmaregistro').modal('toggle');
+}
+
+ipcRenderer.on('guardareporteresult',(event,result)=>{
+    $('#Confirmaregistro').modal('toggle');
+    let bodymodal=$("#modalbody");
+    bodymodal.empty()
+    if(result){
+        console.log('registro confirmado')
+        let contentconfirmed=`<h5>El registro se guardó correctamente y podrá ser visto desde la página.</h5>
+        <i class="fa fa-check-circle" aria-hidden="true"></i>`
+        bodymodal.append(contentconfirmed)
+    }
+    else{
+        console.log('faltan campos por llenar')
+        let contenterror=`<h5>El registro no fue guardado, se deben llenar todos los campos.</h5>
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>`
+        $("#titulomodal").text("Error en el registro.")
+        let botonmodal=$("#botonmodal")
+        botonmodal.removeClass('btn-success')
+        botonmodal.addClass('btn-warning')
+        let button = document.getElementById("botonmodal")
+        button.setAttribute("onclick", "cerrarmodal()")
+        bodymodal.append(contenterror)
+    }
+})

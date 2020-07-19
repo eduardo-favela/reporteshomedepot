@@ -6,15 +6,29 @@
     <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../js/EasyAutocomplete-1.3.5/easy-autocomplete.css">
     <link rel="stylesheet" href="../js/EasyAutocomplete-1.3.5/easy-autocomplete.themes.css">
+    <link rel="stylesheet" href="../../icons/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../css/capturareportes.css">
     <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
 </head>
-<div class="jumbotron jumbotron-fluid">
-    <div class="container">
-      <h1 class="display-4">Kiosko</h1>
-      <p class="lead">Generación de reportes de automercadeo de Home Depot.</p>
+<div class="container-well">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <h4 class="navbar-brand" href="#">Kiosko</h4>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Actualizar puntos de venta</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Ver reportes</a>
+        </li>
+      </ul>
     </div>
-  </div>
-<div class="container">
+  </nav>
+</div>
+<div class="container" style="margin-top: 10%;">
     <div class="row">
         <div class="col-md-4 mt-1">
           <div class="form-group">
@@ -49,7 +63,7 @@
           <div class="form-group mt-1">
             <h5>Tipo de persona que reporta</h5>
             <select id="tiporeporta" class="form-control">
-              <option selected>Seleccionar...</option>
+              <option selected value="seleccionar">Seleccionar...</option>
               <option>Usuario Externo</option>
               <option>Empleado</option>
             </select>
@@ -70,13 +84,35 @@
     </div>
     <div class="row mt-5">
       <div class="col-md-8 offset-2 d-flex justify-content-center">
-        <button class="col-md-4 btn btn-primary mr-5" onclick="guardar()">Guardar reporte</button>
+        <button class="col-md-4 btn btn-primary mr-5" type="button" onclick="guardar()">Guardar reporte</button>
         <button class="col-md-4 btn btn-secondary ml-5" onclick="limpiar()">Limpiar</button>
       </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="Confirmaregistro" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="titulomodal">¡Registro guardado con éxito!</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body d-flex justify-content-center" id="modalbody">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" id="botonmodal" style="color:white" onclick="continuarcaptura()">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script type="text/javascript" src="../js/jquery-3.5.1.js"></script>
 <script type="text/javascript" src="../js/EasyAutocomplete-1.3.5/jquery.easy-autocomplete.js"></script>
+<script type="text/javascript" src="../../../node_modules/bootstrap/dist/js/bootstrap.js"></script>
 <script type="text/javascript" src="../js/capturareportes.js"></script>
+<script type="text/javascript" src="../js/subearchivo.js"></script>
 </body>
 </html>

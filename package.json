@@ -1,24 +1,28 @@
 {
-  "name": "app-reportes-home-kiosko",
+  "name": "reportes_home_depot_kiosko",
   "version": "1.0.0",
-  "description": "",
+  "description": "Aplicacion para generar reportes de callcenter de home depot.",
   "main": "src/index.js",
   "scripts": {
     "start": "electron src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package-win": "electron-packager . ReportesHomeDepot --overwrite --asar --platform=win32 --arch=ia32 --icon=assets/logo.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Reportes Home Depot Kiosko\"",
+    "create-installer-win": "node installers/createinstaller.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "admin-lte": "^3.0.5",
     "bootstrap": "^4.5.0",
     "dotenv": "^8.2.0",
     "edit-json-file": "^1.4.0",
     "jquery": "^3.5.1",
-    "mssql": "^6.2.0"
+    "mssql": "^6.2.0",
+    "xlsx-parse-json": "^3.1.0"
   },
   "devDependencies": {
-    "electron": "^9.1.0"
+    "electron": "^9.1.0",
+    "electron-packager": "^15.0.0",
+    "electron-winstaller": "^4.0.1"
   }
 }

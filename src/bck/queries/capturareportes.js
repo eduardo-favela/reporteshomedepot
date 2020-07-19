@@ -13,3 +13,5 @@ module.exports.guardareporte=`INSERT INTO reporteservicio(fechatomarep,atendio,q
     0,'whoreceive','CALLCENTER','VENDING',
     'observations',
     'REPORTADO','usertype','CALLCENTER','telephone',getdate(),'place','','','','');`
+
+    module.exports.getplaza=`select sucursal plaza from Sucursales where id=?`

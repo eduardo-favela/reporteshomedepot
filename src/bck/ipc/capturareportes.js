@@ -4,7 +4,6 @@ const fs = require('fs');
 
 ipcMain.on('getpventas', async(event)=>{
     let puntosventa=[]
-    console.log("Recibi el ipc!")
     const pventas=await helper.getpventas();
     for (var i = 0; i < pventas.length; i++) {
         puntosventa.push(pventas[i]);
@@ -20,5 +19,5 @@ ipcMain.on('getplazatipomaq',async(event,nombrepventa)=>{
 
 ipcMain.on('guardareporte',async(event,reporte)=>{
     const guardareport=await helper.guardareporte(reporte)
-    console.log(reporte)
+    event.reply('guardareporteresult',guardareport)
 })
