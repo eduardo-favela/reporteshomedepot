@@ -7,11 +7,11 @@ if (setupEvents.handleSquirrelEvent()) {
 const{BrowserWindow,app} = require('electron');
 const{ipcMain}= require('electron');
 const{Menu} = require('electron');
-
+const xlsxj = require("xlsx-to-json");
 const url = require('url')
 const path = require('path')
 
-app.whenReady().then(requerirIpc)
+app.whenReady().then(actualizararchivopv)
 
 process.on("uncaughtException", (err) => {
     console.log(err);
@@ -24,7 +24,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('activate', () => {
-        ventanaMain();
+    ventanaMain();
 })
 
 function ventanaMain() {
@@ -56,7 +56,31 @@ function ventanaMain() {
 
 }
 
+function actualizararchivopv(){
+    try {
+        const JsonFile = require("edit-json-file");
+        let file = JsonFile(`${__dirname}/puntosventa.json`);
+        if (file.toObject()[0]!=undefined){
+            requerirIpc()
+        }
+        else{
+            xlsxj({
+                input: path.join(__dirname, 'VendingHomeDepot.xlsx'), 
+                output: path.join(__dirname, 'puntosventa.json')
+              }, function(err, result) {
+                if(err) {
+                  console.log(err);
+                }else {
+                    requerirIpc()
+                }
+              });
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 function requerirIpc() {
      require('./bck/ipc/capturareportes.js');
-     ventanaMain();
+     ventanaMain()
 }

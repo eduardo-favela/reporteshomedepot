@@ -18,7 +18,7 @@
     "edit-json-file": "^1.4.0",
     "jquery": "^3.5.1",
     "mssql": "^6.2.0",
-    "xlsx-parse-json": "^3.1.0"
+    "xlsx-to-json": "^0.3.0"
   },
   "devDependencies": {
     "electron": "^9.1.0",

@@ -1,6 +1,6 @@
 const { ipcRenderer } = require('electron');
 ipcRenderer.send('conexion', '')
-ipcRenderer.send('getpventas','')
+//ipcRenderer.send('getpventas','')
 
 let opciones={
 
@@ -8,7 +8,7 @@ let opciones={
 
     adjustWidth: false,
 
-    getValue: "nombre",
+    getValue: "Cliente",
   
     list: {
 		match: {
@@ -24,9 +24,22 @@ let opciones={
 			type: "slide",
 			time: 300
         },
-        onChooseEvent: function() {
-            let nombrepventa=$("#pventa").val().toString();
-            ipcRenderer.send('getplazatipomaq',nombrepventa)
+        onSelectItemEvent: function() {
+            let reportinfo={}
+            reportinfo.plaza = $("#pventa").getSelectedItemData().Estado;
+            reportinfo.pventa=$("#pventa").getSelectedItemData().Dete;
+            reportinfo.ruta="0";
+            if ($("#pventa").getSelectedItemData().Tipo.trim()=="REFRESCO"){
+                reportinfo.tipomaq="RF"
+            }
+            else if($("#pventa").getSelectedItemData().Tipo.trim()=="SATELITAL"){
+                reportinfo.tipomaq="ST"
+            }
+            else if($("#pventa").getSelectedItemData().Tipo.trim()=="SNACKS"){
+                reportinfo.tipomaq="SK"
+            }
+            getplazatipomaqresult(reportinfo)
+
         }
     },
     theme:"square"
@@ -34,7 +47,7 @@ let opciones={
 
 $("#pventa").easyAutocomplete(opciones);
 
-ipcRenderer.on('getplazatipomaqresult',(event,infopventa)=>{
+function getplazatipomaqresult(infopventa){
     console.log(infopventa);
     $("#plaza").empty()
     $("#tipomaq").empty()
@@ -44,7 +57,7 @@ ipcRenderer.on('getplazatipomaqresult',(event,infopventa)=>{
     $("#ruta").val(infopventa.ruta)
     $("#plaza").val(infopventa.plaza)
     $("#tipomaq").val(infopventa.tipomaq)
-})
+}
 
 function guardar(){
     let reporte={}
