@@ -11,7 +11,7 @@ const xlsxj = require("xlsx-to-json");
 const url = require('url')
 const path = require('path')
 
-app.whenReady().then(actualizararchivopv)
+app.whenReady().then(requerirIpc)
 
 process.on("uncaughtException", (err) => {
     console.log(err);
@@ -41,7 +41,7 @@ function ventanaMain() {
             },
             show: false
         })
-        mainwindow.webContents.openDevTools()
+        //mainwindow.webContents.openDevTools()
     mainwindow.loadURL(
         url.format({
             pathname: path.join(__dirname, 'frnt/views/capturareportes.html'),

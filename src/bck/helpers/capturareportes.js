@@ -12,25 +12,25 @@ module.exports.getpventas=async()=>{
     return arraypventas;
 }
 
-// module.exports.getplazatipomaq=async(nombrepventa)=>{
-//     //console.log(nombrepventa)
-//     let nombrepuntoventa=nombrepventa.replace(/\s+/g,' ').replace('HOME DEPOT','').trim()
-//     let infopventa=await(await poolvoficiname).query(queries.getinfopventa.replace('?',nombrepuntoventa))
-//     let idplaza=infopventa.recordset[0].plaza
-//     infopventa.recordset[0].plaza=await(await poolkpos).query(queries.getplaza.replace('?',idplaza))
-//     //console.log(queries.getinfopventa.replace('?',nombrepuntoventa))
-//     //infopventa.recordset[0].plaza=infopventa.recordset[0].plaza.trim()
-//     infopventa.recordset[0].plaza=infopventa.recordset[0].plaza.recordset[0].plaza.trim()
-//     infopventa.recordset[0].tipomaq=infopventa.recordset[0].tipomaq.trim()
-//     infopventa.recordset[0].pventa=infopventa.recordset[0].pventa.trim()
-//     return infopventa
-// }
+module.exports.getplazatipomaq=async(nombrepventa)=>{
+    //console.log(nombrepventa)
+    let nombrepuntoventa=nombrepventa.replace(/\s+/g,' ').replace('HOME DEPOT','').trim()
+    let infopventa=await(await poolvoficiname).query(queries.getinfopventa.replace('?',nombrepuntoventa))
+    let idplaza=infopventa.recordset[0].plaza
+    infopventa.recordset[0].plaza=await(await poolkpos).query(queries.getplaza.replace('?',idplaza))
+    //console.log(queries.getinfopventa.replace('?',nombrepuntoventa))
+    //infopventa.recordset[0].plaza=infopventa.recordset[0].plaza.trim()
+    infopventa.recordset[0].plaza=infopventa.recordset[0].plaza.recordset[0].plaza.trim()
+    infopventa.recordset[0].tipomaq=infopventa.recordset[0].tipomaq.trim()
+    infopventa.recordset[0].pventa=infopventa.recordset[0].pventa.trim()
+    return infopventa
+}
 
 module.exports.guardareporte=async(reporte)=>{
     if (reporte.tiporeporta=='SELECCIONAR'){
         reporte.tiporeporta=''
     }
-    if (reporte.quienreporta=='' || reporte.tipomaq=='' || reporte.npventa=='' || reporte.pventa=='' || reporte.aquienreporta=='' || reporte.observaciones=='' || reporte.tiporeporta=='' || reporte.telefono=='' || reporte.plaza=='') {
+    if (reporte.quienreporta=='' || reporte.tipomaq=='' || reporte.npventa=='' || reporte.pventa=='' || reporte.aquienreporta=='' || reporte.observaciones=='' || reporte.tiporeporta=='' || reporte.plaza=='') {
         console.log(reporte)
         return false
     }
