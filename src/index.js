@@ -10,6 +10,15 @@ const{Menu} = require('electron');
 const xlsxj = require("xlsx-to-json");
 const url = require('url')
 const path = require('path')
+// include node fs module
+const fs = require('fs');
+ 
+// delete file named 'sample.txt'
+fs.unlink(path.join(__dirname, 'puntosventa.json'), function (err) {
+    if (err) throw err;
+    // if no error, file has been deleted successfully
+    console.log('File deleted!');
+}); 
 
 app.whenReady().then(requerirIpc)
 
