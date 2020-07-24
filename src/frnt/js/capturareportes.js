@@ -1,7 +1,9 @@
 const { ipcRenderer } = require('electron');
 ipcRenderer.send('conexion', '')
 ipcRenderer.send('getpventas','')
-
+ipcRenderer.on('errorconexion', (event, data) => {
+    ipcRenderer.send('conectionerr','')
+})
 let opciones={
 
     url: "../../puntosventa.json",
