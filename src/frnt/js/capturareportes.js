@@ -36,6 +36,21 @@ let opciones={
 
 $("#pventa").easyAutocomplete(opciones);
 
+$(document).ready(function(){
+    $(".easy-autocomplete.eac-square").css("width","100%");
+    $("#pventa")
+    .css("width","100%")
+    .css("min-width","100%")
+    .css("border-color","#c6cfd0")
+    .css("box-shadow","none")
+    .css("border-radius","4px")
+    .css("color","black")
+})
+
+function vereportes(){
+    $("#vereportesmodal").modal().toggle()
+}
+
 ipcRenderer.on('getplazatipomaqresult',(event,infopventa)=>{
     console.log(infopventa);
     $("#plaza").empty()
@@ -74,6 +89,11 @@ function limpiar(){
     $("#npventa").val("")
     $("#pventa").val("")
     $("#quienreporta").focus()
+}
+
+function continuarcapturarep(){
+    $('#vereportesmodal').modal('toggle');
+    limpiar()
 }
 
 function continuarcaptura(){

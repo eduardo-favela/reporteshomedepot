@@ -41,10 +41,11 @@ async function eliminararchivo(){
         else{
         // if no error, file has been deleted successfully
         console.log('Archivo antiguo de puntos de venta eliminado!');
-        requerirIpc
+        requerirIpc();
         }
     });
 }
+
 
 
 app.whenReady().then(eliminararchivo)
@@ -116,6 +117,8 @@ function actualizararchivopv(){
         console.log(err)
     }
 }
+
+
 
 function requerirIpc() {
      require('./bck/ipc/capturareportes.js');
