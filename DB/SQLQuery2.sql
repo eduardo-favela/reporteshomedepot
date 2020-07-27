@@ -1,0 +1,1 @@
+select * from Sucursales where id=7

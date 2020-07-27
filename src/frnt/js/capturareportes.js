@@ -46,7 +46,6 @@ $(document).ready(function(){
     .css("border-radius","4px")
     .css("color","black")
 })
-
 function vereportes(){
     $("#vereportesmodal").modal().toggle()
 }
