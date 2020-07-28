@@ -48,8 +48,9 @@ $(document).ready(function(){
 })
 function vereportes(){
     $("#vereportesmodal").modal().toggle()
+    $("#bodytabla").empty()
+    $("#bodytabla").append("<tr><td><p>No hay registros para mostrar</p></td></tr>")
 }
-
 ipcRenderer.on('getplazatipomaqresult',(event,infopventa)=>{
     console.log(infopventa);
     $("#plaza").empty()
@@ -95,7 +96,6 @@ function consultareportes(){
         let fechas={}
         fechas.fecha1=$("#fecha1").val().toString()
         fechas.fecha2=$("#fecha2").val().toString()
-        console.log("recibi el click de buscar reportes",fechas)
         ipcRenderer.send('consultareportes',fechas)
     }
 }
@@ -115,7 +115,61 @@ function cerrarmodal(){
 }
 
 ipcRenderer.on('consultareportesresult',(event,result)=>{
-    console.log(result)
+
+    if(result){
+        let cont=""
+        $.each(result, function(i, r) {
+            let opcionestatus=""
+            if(r.estatus==="PENDIENTE"){
+                opcionestatus="REPORTADO"
+            }
+            else{
+                opcionestatus="REPORTADO"
+            }
+            cont += "<tr>" +
+                "<td>" + r.folio + "</td>" +
+                "<td>" + r.puntoventa + "</td>" +
+                "<td>" + r.fechatomarep + "</td>" +
+                "<td>" + r.telefono + "</td>" +
+                "<td><select id='estatusrep'>"+
+                        "<option selected value="+ r.estatus + ">"+r.estatus+"</option>"+
+                        "<option>LIBERADO</option>"+
+                    "</select>"+
+                "</td>" +
+                "<td>" + r.quienreporta + "</td>" +
+                "<td><textarea type='text' placeholder='Observaciones de liberación de reporte' readonly></textarea></td>" +
+                "<td><button class='btn btn-success' id='btnGuardarcambios' type='button'><i class='fa fa-floppy-o' aria-hidden='true'></i></td>" +
+                "</tr>";
+        });
+        $("#bodytabla").empty()
+        $("#bodytabla").append(cont)
+
+        $("#bodytabla tr td #estatusrep").change(function(){
+            $(this).addClass('selected').siblings().removeClass('selected');
+            let textarea=$(this).parent().closest('td').siblings().find('textarea');
+            if($(this).val()==="LIBERADO"){
+				textarea.attr('readonly',false);
+				textarea.focus();
+            }
+            else{
+                textarea.empty()
+				textarea.attr('readonly',true);
+            }
+        })
+        $("#btnGuardarcambios").click(function(){
+            let updatereporte={}
+            updatereporte.folio=$(this).parent().siblings('td:first').html()
+            updatereporte.observaciones2=$(this).parent().closest('td').siblings().find('textarea').val()
+            updatereporte.estatus=$(this).parent().closest('td').siblings().find('select').val()
+            if(updatereporte.observaciones2&&updatereporte.estatus){
+                $(this).parent().parent().remove()
+                ipcRenderer.send('guardarcambios',updatereporte)
+            }
+        })
+    }
+})
+
+ipcRenderer.on('guardarcambiosresult',(event,resultado)=>{
 })
 
 ipcRenderer.on('guardareporteresult',(event,result)=>{

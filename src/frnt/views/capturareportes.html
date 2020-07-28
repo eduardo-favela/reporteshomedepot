@@ -111,8 +111,8 @@
 </div>
 
 <!-- Modal para ver reportes-->
-<div class="modal fade" id="vereportesmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-lg" role="document">
+<div class="modal fade" data-keyboard="false" data-backdrop="static" id="vereportesmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-lg modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="titulomodalreportes">Modificar reportes</h5>
@@ -135,10 +135,31 @@
               <button class="btn btn-danger" onclick="consultareportes()" id="refrescareportes"><i class="fa fa-refresh" aria-hidden="true"></i></button>
             </div>
         </div>
+        <div class="row">
+          <div class="col-md-12">
+            <table class="table table-responsive-lg">
+                <thead>
+                    <tr class="bg-info">
+                      <th scope="col">Folio</th>
+                      <th scope="col">Punto de venta</th>
+                      <th scope="col">Fecha del reporte</th>
+                      <th scope="col">Telefono</th>
+                      <th scope="col">Persona que reportó</th>
+                      <th scope="col">Estatus</th>
+                      <th scope="col">Observaciones</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="bodytabla">
+                    
+                  </tbody>
+              </table>
+          </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="botonmodalreportes" style="color:white" onclick="continuarcapturarep()">Continuar</button>
       </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" id="botonmodalreportes" style="color:white" onclick="continuarcapturarep()">Continuar</button>
     </div>
   </div>
 </div>

@@ -16,6 +16,11 @@ module.exports.guardareporte=`INSERT INTO reporteservicio(fechatomarep,atendio,q
 
 module.exports.getplaza=`select sucursal plaza from Sucursales where id=?`
 
-module.exports.getreportes=`SELECT * FROM reporteservicio where atendio='CALLCENTER' 
-and nombre like '%HOME DEPOT%' and anomalia=18 and fechatomarep between 'fecha1'
-and 'fecha2' and estatus <> 'LIBERADO' order by folio desc`
+module.exports.getreportes=`SELECT folio, (pventa+' - '+nombre) puntoventa, 
+CONVERT(VARCHAR(10), fechatomarep, 103) AS [fechatomarep], telefono,quienreporta,estatus,observaciones2 
+FROM reporteservicio WHERE atendio='CALLCENTER' AND nombre LIKE '%HOME DEPOT%'
+AND anomalia=18 AND fechatomarep BETWEEN 'fecha1' AND 'fecha2' 
+and estatus<>'LIBERADO' ORDER BY folio DESC`
+
+module.exports.updateregistro=`UPDATE reporteservicio set estatus='nuevoestatus', 
+observaciones2='observations', fechalibera=GETDATE(), libero='CALLCENTER' WHERE folio=serial`

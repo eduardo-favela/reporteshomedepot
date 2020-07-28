@@ -57,7 +57,19 @@ module.exports.getreportes=async(fechas)=>{
     let reportes=queries.getreportes
     .replace('fecha1',fechas.fecha1)
     .replace('fecha2',fechas.fecha2)
-    console.log(reportes)
+    /* console.log(reportes) */
     let getreport=await(await pooldwh).query(reportes)
-    return getreport
+    for (let i = 0; i < getreport.recordset.length; i++) {
+        getreport.recordset[i].puntoventa=getreport.recordset[i].puntoventa.trim()
+    }
+    return getreport.recordset
+}
+
+module.exports.updateregistro=async(reporte)=>{
+    let updatereporte=queries.updateregistro
+    .replace('nuevoestatus',reporte.estatus)
+    .replace('observations',reporte.observaciones2)
+    .replace('serial',reporte.folio)
+    let actualizareporte=await(await pooldwh).query(updatereporte)
+    return true
 }

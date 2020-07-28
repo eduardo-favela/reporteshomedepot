@@ -21,8 +21,12 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.modal-footer{
+    bottom: 0px;
+}
+
 .modal-dialog-lg{
-    width: 80% !important;
-    max-width: 80% !important;
-    min-width: 80% !important;
+    width: 90% !important;
+    max-width: 90% !important;
+    min-width: 90% !important;
 }
