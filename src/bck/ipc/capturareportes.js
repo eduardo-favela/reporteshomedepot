@@ -21,3 +21,8 @@ ipcMain.on('guardareporte',async(event,reporte)=>{
     const guardareport=await helper.guardareporte(reporte)
     event.reply('guardareporteresult',guardareport)
 })
+
+ipcMain.on('consultareportes',async(event,fechas)=>{
+    const reportes=await helper.getreportes(fechas)
+    event.reply('consultareportesresult',reportes)
+})

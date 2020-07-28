@@ -90,6 +90,16 @@ function limpiar(){
     $("#quienreporta").focus()
 }
 
+function consultareportes(){
+    if($("#fecha1").val()&&$("#fecha2").val()){
+        let fechas={}
+        fechas.fecha1=$("#fecha1").val().toString()
+        fechas.fecha2=$("#fecha2").val().toString()
+        console.log("recibi el click de buscar reportes",fechas)
+        ipcRenderer.send('consultareportes',fechas)
+    }
+}
+
 function continuarcapturarep(){
     $('#vereportesmodal').modal('toggle');
     limpiar()
@@ -103,6 +113,10 @@ function continuarcaptura(){
 function cerrarmodal(){
     $('#Confirmaregistro').modal('toggle');
 }
+
+ipcRenderer.on('consultareportesresult',(event,result)=>{
+    console.log(result)
+})
 
 ipcRenderer.on('guardareporteresult',(event,result)=>{
     $('#Confirmaregistro').modal('toggle');

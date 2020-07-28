@@ -52,3 +52,12 @@ module.exports.guardareporte=async(reporte)=>{
         return true
     }
 }
+
+module.exports.getreportes=async(fechas)=>{
+    let reportes=queries.getreportes
+    .replace('fecha1',fechas.fecha1)
+    .replace('fecha2',fechas.fecha2)
+    console.log(reportes)
+    let getreport=await(await pooldwh).query(reportes)
+    return getreport
+}

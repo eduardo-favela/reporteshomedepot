@@ -15,3 +15,7 @@ module.exports.guardareporte=`INSERT INTO reporteservicio(fechatomarep,atendio,q
     'REPORTADO','usertype','CALLCENTER','telephone',getdate(),'place','','','','');`
 
 module.exports.getplaza=`select sucursal plaza from Sucursales where id=?`
+
+module.exports.getreportes=`SELECT * FROM reporteservicio where atendio='CALLCENTER' 
+and nombre like '%HOME DEPOT%' and anomalia=18 and fechatomarep between 'fecha1'
+and 'fecha2' and estatus <> 'LIBERADO' order by folio desc`

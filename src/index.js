@@ -4,7 +4,7 @@ if (setupEvents.handleSquirrelEvent()) {
     return;
 }
 
-const{BrowserWindow,app,BrowserView,dialog} = require('electron');
+const{BrowserWindow,app,BrowserView,dialog, nativeImage} = require('electron');
 const{ipcMain}= require('electron');
 const{Menu} = require('electron');
 const xlsxj = require("xlsx-to-json");
@@ -72,7 +72,7 @@ function ventanaMain() {
     mainwindow = new BrowserWindow({
             width: 1200,
             height: 1000,
-            icon: __dirname + "/icons/logo.ico",
+            icon: nativeImage.createFromPath(path.join(__dirname,'/icons/logo.ico')),
             webPreferences: {
                 nodeIntegration: true,
                 nodeIntegrationInWorker: false,

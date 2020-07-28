@@ -8,6 +8,12 @@
     font-size: 50px;
 }
 
+#refrescareportes{
+    width: 20%;
+    height: 100%;
+    font-size: x-large;
+}
+
 .fa fa-bars{
     font-size: 30px;
 }
@@ -15,7 +21,8 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.modal-lg {
+.modal-dialog-lg{
     width: 80% !important;
     max-width: 80% !important;
+    min-width: 80% !important;
 }

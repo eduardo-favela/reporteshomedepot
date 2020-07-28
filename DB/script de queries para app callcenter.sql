@@ -1,5 +1,5 @@
-SELECT * FROM reporteservicio where atendio='CALLCENTER' and nombre like '%HOME DEPOT%'
-and anomalia=18 and fechatomarep between '2020-01-01' and GETDATE() order by folio desc
+SELECT * FROM reporteservicio WHERE atendio='CALLCENTER' AND nombre LIKE '%HOME DEPOT%'
+AND anomalia=18 AND fechatomarep BETWEEN '2020-01-01' AND '2020-07-27' ORDER BY folio DESC
 
 INSERT INTO reporteservicio(fechatomarep,atendio,quienreporta,
 ruta,tipomaq,anomalia,pventa,nombre,serie,aquienreporta,medio,puesto,
@@ -34,6 +34,6 @@ pventa
 quienreporta 
 tipomaq*/
 
-delete reporteservicio where folio in (198462)
+DELETE reporteservicio WHERE folio IN (198462)
 
-update reporteservicio set plaza='LEON' where folio=198459
+UPDATE reporteservicio SET plaza='LEON' WHERE folio=198459
