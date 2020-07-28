@@ -14,6 +14,10 @@
     font-size: x-large;
 }
 
+#btnvereport{
+    width:100%;
+}
+
 .fa fa-bars{
     font-size: 30px;
 }
