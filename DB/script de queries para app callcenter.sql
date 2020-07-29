@@ -5,6 +5,8 @@ SELECT folio, (pventa+' - '+nombre) puntoventa, fechatomarep, telefono,quienrepo
 FROM reporteservicio WHERE atendio='CALLCENTER' AND nombre LIKE '%HOME DEPOT%'
 AND anomalia=18 AND fechatomarep BETWEEN '2020-01-01' AND '2020-07-27' AND estatus<>'LIBERADO' ORDER BY folio DESC
 
+UPDATE reporteservicio SET fechareptecnico=GETDATE(), estatus=nuevoestatus
+
 INSERT INTO reporteservicio(fechatomarep,atendio,quienreporta,
 ruta,tipomaq,anomalia,pventa,nombre,serie,aquienreporta,medio,puesto,
 observaciones,estatus,tiporeporta,reporto, telefono,fechaterminoreporte, plaza,fechareptecnico,fechalibera, 

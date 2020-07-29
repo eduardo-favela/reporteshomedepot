@@ -124,7 +124,7 @@ ipcRenderer.on('consultareportesresult',(event,result)=>{
                 opcionestatus="REPORTADO"
             }
             else{
-                opcionestatus="REPORTADO"
+                opcionestatus="PENDIENTE"
             }
             cont += "<tr>" +
                 "<td>" + r.folio + "</td>" +
@@ -132,6 +132,7 @@ ipcRenderer.on('consultareportesresult',(event,result)=>{
                 "<td>" + r.fechatomarep + "</td>" +
                 "<td>" + r.telefono + "</td>" +
                 "<td><select id='estatusrep'>"+
+                        "<option>"+opcionestatus+"</option>"+
                         "<option selected value="+ r.estatus + ">"+r.estatus+"</option>"+
                         "<option>LIBERADO</option>"+
                     "</select>"+
@@ -161,9 +162,18 @@ ipcRenderer.on('consultareportesresult',(event,result)=>{
             updatereporte.folio=$(this).parent().siblings('td:first').html()
             updatereporte.observaciones2=$(this).parent().closest('td').siblings().find('textarea').val()
             updatereporte.estatus=$(this).parent().closest('td').siblings().find('select').val()
-            if(updatereporte.observaciones2&&updatereporte.estatus){
-                $(this).parent().parent().remove()
-                ipcRenderer.send('guardarcambios',updatereporte)
+
+            if(updatereporte.estatus==="LIBERADO"){
+                if(updatereporte.observaciones2&&updatereporte.estatus){
+                    $(this).parent().parent().remove()
+                    ipcRenderer.send('guardarcambios',updatereporte)
+                }
+            }
+            else{
+                if(updatereporte.estatus){
+                    $(this).parent().parent().remove()
+                    ipcRenderer.send('guardarcambios',updatereporte)
+                }
             }
         })
     }

@@ -66,10 +66,19 @@ module.exports.getreportes=async(fechas)=>{
 }
 
 module.exports.updateregistro=async(reporte)=>{
-    let updatereporte=queries.updateregistro
-    .replace('nuevoestatus',reporte.estatus)
-    .replace('observations',reporte.observaciones2)
-    .replace('serial',reporte.folio)
-    let actualizareporte=await(await pooldwh).query(updatereporte)
-    return true
+    if(reporte.estatus==="LIBERADO"){
+        let updatereporte=queries.updateregistro
+        .replace('nuevoestatus',reporte.estatus)
+        .replace('observations',reporte.observaciones2)
+        .replace('serial',reporte.folio)
+        let actualizareporte=await(await pooldwh).query(updatereporte)
+        return true
+    }
+    else if(reporte.estatus==="PENDIENTE"){
+        let updatereportepend=queries.updateregistropend
+        .replace('nuevoestatus',reporte.estatus)
+        .replace('serial',reporte.folio)
+        let actualizareportepend=await(await pooldwh).query(updatereportepend)
+        return true
+    }
 }

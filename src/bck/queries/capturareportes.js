@@ -24,3 +24,6 @@ and estatus<>'LIBERADO' ORDER BY folio DESC`
 
 module.exports.updateregistro=`UPDATE reporteservicio set estatus='nuevoestatus', 
 observaciones2='observations', fechalibera=GETDATE(), libero='CALLCENTER' WHERE folio=serial`
+
+module.exports.updateregistropend=`UPDATE reporteservicio set fechareptecnico=GETDATE(), estatus='nuevoestatus'
+WHERE folio=serial`
