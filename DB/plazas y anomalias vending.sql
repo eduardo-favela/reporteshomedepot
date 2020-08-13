@@ -1,3 +1,1 @@
-select * from Sucursales where id=59
-
-SELECT * FROM TipoAnomalia
+SELECT * FROM Sucursales WHERE sucursal LIKE '%tam%'

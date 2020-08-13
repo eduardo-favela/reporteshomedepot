@@ -4,37 +4,41 @@ ipcRenderer.send('getpventas','')
 ipcRenderer.on('errorconexion', (event, data) => {
     ipcRenderer.send('conectionerr','')
 })
-let opciones={
 
-    url: "../../puntosventa.json",
+ipcRenderer.on('getpventasresult',(event,pventas)=>{
 
-    adjustWidth: false,
+    let opciones={
 
-    getValue: "nombre",
-  
-    list: {
-		match: {
-			enabled: true
-		},
-		maxNumberOfElements: 5,
+        data: pventas,
 
-		showAnimation: {
-			type: "slide",
-			time: 300
-		},
-		hideAnimation: {
-			type: "slide",
-			time: 300
+        adjustWidth: false,
+
+        getValue: "nombre",
+
+        list: {
+            match: {
+                enabled: true
+            },
+            maxNumberOfElements: 5,
+
+            showAnimation: {
+                type: "slide",
+                time: 300
+            },
+            hideAnimation: {
+                type: "slide",
+                time: 300
+            },
+            onSelectItemEvent: function() {
+                let nombrepventa=$("#pventa").val().toString();
+                ipcRenderer.send('getplazatipomaq',nombrepventa)
+            }
         },
-        onSelectItemEvent: function() {
-            let nombrepventa=$("#pventa").val().toString();
-            ipcRenderer.send('getplazatipomaq',nombrepventa)
-        }
-    },
-    theme:"square"
-  };
+        theme:"square"
+    };
 
-$("#pventa").easyAutocomplete(opciones);
+    $("#pventa").easyAutocomplete(opciones);
+})
 
 $(document).ready(function(){
     $(".easy-autocomplete.eac-square").css("width","100%");
@@ -74,7 +78,7 @@ function guardar(){
     reporte.telefono=$("#telefono").val().toString().toUpperCase()
     reporte.quienreporta=$("#quienreporta").val().toString().toUpperCase()
     reporte.npventa=$("#npventa").val().toString().toUpperCase()
-    reporte.pventa=$("#pventa").val().toString().toUpperCase()
+    reporte.pventa=$("#pventa").val().toString().split('-')[1].toUpperCase()
     ipcRenderer.send('guardareporte',reporte)
 }
 function limpiar(){
@@ -93,6 +97,12 @@ function limpiar(){
 
 function consultareportes(){
     if($("#fecha1").val()&&$("#fecha2").val()){
+        
+        $("#bodytabla").empty()
+        $("#bodytabla").append(`<tr><td colspan=8><div class="spinner-border text-info" role="status">
+        <span class="sr-only">Loading...</span>
+      </div></td></tr>`)        
+
         let fechas={}
         fechas.fecha1=$("#fecha1").val().toString()
         fechas.fecha2=$("#fecha2").val().toString()
@@ -139,7 +149,7 @@ ipcRenderer.on('consultareportesresult',(event,result)=>{
                 "</td>" +
                 "<td>" + r.quienreporta + "</td>" +
                 "<td><textarea type='text' placeholder='Observaciones de liberación de reporte' readonly></textarea></td>" +
-                "<td><button class='btn btn-success' id='btnGuardarcambios' type='button'><i class='fa fa-floppy-o' aria-hidden='true'></i></td>" +
+                "<td><button class='btn btn-success btnGuardarcambios' type='button'><i class='fa fa-floppy-o' aria-hidden='true'></i></td>" +
                 "</tr>";
         });
         $("#bodytabla").empty()
@@ -157,7 +167,7 @@ ipcRenderer.on('consultareportesresult',(event,result)=>{
 				textarea.attr('readonly',true);
             }
         })
-        $("#btnGuardarcambios").click(function(){
+        $(".btnGuardarcambios").click(function(){
             let updatereporte={}
             updatereporte.folio=$(this).parent().siblings('td:first').html()
             updatereporte.observaciones2=$(this).parent().closest('td').siblings().find('textarea').val()
@@ -196,12 +206,12 @@ ipcRenderer.on('guardareporteresult',(event,result)=>{
         console.log('faltan campos por llenar')
         let contenterror=`<h5>El registro no fue guardado, se deben llenar todos los campos.</h5>
         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>`
+        bodymodal.append(contenterror)
         $("#titulomodal").text("Error en el registro.")
         let botonmodal=$("#botonmodal")
         botonmodal.removeClass('btn-success')
         botonmodal.addClass('btn-warning')
         let button = document.getElementById("botonmodal")
         button.setAttribute("onclick", "cerrarmodal()")
-        bodymodal.append(contenterror)
     }
 })

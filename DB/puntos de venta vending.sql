@@ -1,28 +1,52 @@
-select * from pventas where id_empresa='AMERCADEO' 
-and nombre like '%HOME DEPOT%' group by nombre;
+SELECT * FROM pventas WHERE id_empresa='AMERCADEO' 
+AND nombre LIKE '%HOME DEPOT %';
 /*and pventa=9531 
 order by fecha_cierre desc and estatus='normal'*/
 
-select CONCAT(pventa,' ',nombre) from pventas
+SELECT CONCAT(pventa,' ',nombre) FROM pventas
 
-select TOP 1 plaza, tipo tipomaq, ruta from pventas 
-where id_empresa='AMERCADEO' and nombre like ('%'+'%HOME DEPOT SAN LUIS CP Sk'+'%')
-order by fecha_cierre desc
+SELECT pventa FROM pventas WHERE 
+id_empresa='AMERCADEO' AND nombre LIKE '%HOME DEPOT%' GROUP BY pventa
 
-select TOP 1 plaza, tipo tipomaq, ruta from pventas 
-where id_empresa='AMERCADEO' and nombre like ('%'+?+'%')
-order by fecha_cierre desc
+SELECT TOP 1 plaza, tipo tipomaq, ruta FROM pventas 
+WHERE id_empresa='AMERCADEO' AND nombre LIKE ('%'+'%HOME DEPOT SAN LUIS CP Sk'+'%')
+ORDER BY fecha_cierre DESC
 
-select TOP 1 plaza, tipo tipomaq, ruta from pventas 
-where nombre like ('%juriquilla%')
-order by fecha_cierre desc
+SELECT TOP 1 plaza, tipo tipomaq, ruta FROM pventas 
+WHERE id_empresa='AMERCADEO' AND nombre LIKE ('%'+?+'%')
+ORDER BY fecha_cierre DESC
 
-select TOP 1 plaza, tipo tipomaq, ruta,pventa from pventas
-where id_empresa='AMERCADEO' and nombre like ('%HOME DEPOT ACAPULCO DIAMANTE CP RF%')
-order by fecha_cierre desc
+SELECT TOP 1 * FROM pventas WHERE id_empresa='AMERCADEO' AND
+nombre LIKE ('%SAN LUIS%')
+ORDER BY fecha_cierre DESC
+
+SELECT pventa FROM pventas 
+WHERE fecha_cierre='1900-01-01 00:00:00:000'
+AND id_empresa='AMERCADEO' AND fechacap LIKE ('%2020%')
+ORDER BY fecha_cierre DESC
+
+UPDATE pventas SET fecha_cierre=GETDATE() WHERE pventa IN (SELECT pventa FROM pventas 
+WHERE fecha_cierre='1900-01-01 00:00:00:000'
+AND id_empresa='AMERCADEO' AND fechacap LIKE ('%2020%'))
+
+SELECT TOP 1 plaza, tipo tipomaq, ruta,pventa FROM pventas
+WHERE id_empresa='AMERCADEO' AND nombre LIKE ('%HOME DEPOT ACAPULCO DIAMANTE CP RF%')
+ORDER BY fecha_cierre DESC
+
+SELECT * FROM (SELECT (RTRIM(LTRIM(pventa))+'-'+nombre) nombre FROM pventas WHERE
+id_empresa='AMERCADEO' AND nombre LIKE '%HOME DEPOT%') a GROUP BY nombre
+
+SELECT TOP 1 plaza, tipo tipomaq, ruta, pventa FROM pventas 
+WHERE id_empresa='AMERCADEO' AND nombre LIKE '%HOME DEPOT LOMAS VERDES CP RFS%' AND pventa=15234
+ORDER BY fecha_cierre DESC
+
+10056-HOME DEPOT LOMAS VERDES CP RFS
+
+SELECT * FROM transfpventa WHERE pventa_ori=2401 AND pventa_dest=2228 ORDER BY fec_envio DESC
 
 /*nombre like '%HOME DEPOT%'
 
+2401 2228
 
 /*8139        HOME DEPOT SAN LUIS CP Sk
 

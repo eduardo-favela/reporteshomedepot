@@ -1,2 +1,1 @@
-select * from pventas where id_empresa='AMERCADEO' and nombre like '%HOME DEPOT%'
-and estatus='normal' and pventa=8140
+SELECT * FROM transfpventa WHERE pventa_ori=2339 AND PVenta_Dest=2254 ORDER BY fec_envio DESC

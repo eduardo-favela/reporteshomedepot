@@ -16,8 +16,9 @@ const fs = require('fs');
 
 //Variables de ventana.
 let mainwindow;
+let login;
 
- 
+
 ipcMain.on('conectionerr',async(event,arg)=>{
     const options = {
         type: 'warning',
@@ -29,12 +30,33 @@ ipcMain.on('conectionerr',async(event,arg)=>{
     app.quit()
 })
 
-async function eliminararchivo(){
+function ventanaLogin() {
+
+    Menu.setApplicationMenu(null);
+    login = new BrowserWindow({
+            width: 800,
+            height: 600,
+            icon: nativeImage.createFromPath(path.join(__dirname,'/icons/logo.ico')),
+            transparent: true,
+            webPreferences: {
+                nodeIntegration: true
+            },
+            show: false,
+            frame: false
+        })
+        /* login.webContents.openDevTools() */
+    login.loadFile('src/frnt/views/login.html')
+    login.on('closed', () => { login = null })
+    login.once('ready-to-show', () => { login.show() })
+
+}
+
+/* async function eliminararchivo(){
         // delete file named 'sample.txt'
-        fs.unlink(path.join(__dirname, 'puntosventa.json'), function (err) {
+        await fs.unlink(path.join(__dirname, 'puntosventa.json'), function (err) {
         if (err){
             if (err.code === 'ENOENT') {
-                console.log("no se pudo eliminar el archivo antiguo porque no existe.")
+                console.log("No se pudo eliminar el archivo antiguo porque no existe.")
                 requerirIpc();
             }
         }
@@ -44,12 +66,8 @@ async function eliminararchivo(){
         requerirIpc();
         }
     });
-}
-
-
-
-app.whenReady().then(eliminararchivo)
-
+} */
+app.on('ready',ventanaMain)
 process.on("uncaughtException", (err) => {
     console.log(err);
 });
@@ -62,12 +80,11 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
     if (mainwindow===null) {
-        eliminararchivo();
+        ventanaMain();
     }
 })
 
-function ventanaMain() {
-
+async function ventanaMain() {
     Menu.setApplicationMenu(null);
     mainwindow = new BrowserWindow({
             width: 1200,
@@ -80,8 +97,10 @@ function ventanaMain() {
             },
             show: false
         })
-        mainwindow.webContents.openDevTools()
-    mainwindow.loadURL(
+        requerirIpc()
+        //await eliminararchivo()
+        //mainwindow.webContents.openDevTools()
+        mainwindow.loadURL(
         url.format({
             pathname: path.join(__dirname, 'frnt/views/capturareportes.html'),
             protocol: 'file:',
@@ -118,9 +137,8 @@ function actualizararchivopv(){
     }
 }
 
-
-
 function requerirIpc() {
+
      require('./bck/ipc/capturareportes.js');
-     ventanaMain()
+
 }

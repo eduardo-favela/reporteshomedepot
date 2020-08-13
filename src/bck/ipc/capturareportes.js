@@ -1,6 +1,7 @@
 const { ipcMain } = require('electron');
 const helper = require('../helpers/capturareportes');
 const fs = require('fs');
+const JsonFile = require("edit-json-file");
 
 ipcMain.on('getpventas', async(event)=>{
     let puntosventa=[]
@@ -8,12 +9,13 @@ ipcMain.on('getpventas', async(event)=>{
     for (var i = 0; i < pventas.length; i++) {
         puntosventa.push(pventas[i]);
     }
-    fs.writeFileSync(`${__dirname}/../../puntosventa.json`,JSON.stringify(puntosventa))
-    event.reply('getpventasresult',puntosventa);
+    event.reply('getpventasresult', pventas);
 })
 
 ipcMain.on('getplazatipomaq',async(event,nombrepventa)=>{
-    const infopventa=await helper.getplazatipomaq(nombrepventa)
+    let nopventa=nombrepventa.split('-')[0]
+    nombrepventa=nombrepventa.split('-')[1]
+    const infopventa=await helper.getplazatipomaq(nombrepventa,nopventa)
     event.reply('getplazatipomaqresult',infopventa.recordset[0]);
 })
 

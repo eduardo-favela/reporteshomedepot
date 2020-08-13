@@ -1,4 +1,4 @@
-select pventa from pventas where /*nombre like '%HOME DEPOT%' and*/ pventa in(8139
+SELECT pventa FROM pventas WHERE /*nombre like '%HOME DEPOT%' and*/ pventa IN(8139
 ,8140
 ,8454
 ,8574
@@ -273,26 +273,29 @@ select pventa from pventas where /*nombre like '%HOME DEPOT%' and*/ pventa in(81
 ,15369
 ,15370
 ,15371
-,15374) group by pventa order by pventa
+,15374) GROUP BY pventa ORDER BY pventa
 
-select * from pventas where pventa=13288
+SELECT * FROM pventas WHERE pventa=15234
 
 
-insert into pventas(pventa,nombre,tipo,plaza,orden,ruta,zona,iva,supervisor,
+INSERT INTO pventas(pventa,nombre,tipo,plaza,orden,ruta,zona,iva,supervisor,
 bodega,fechacap,turnos,cuentactb1,cuentactb2,cuentactb3,cuentactb4,cuentactb5,cuentactb6,cuentactb7,cuentactb8,cuentactb9,
 cuentactb10,uniforme,posada,capacita,aguinaldo,gratifica,id_usuario,fum,id_empresa,id_sucursal,estatus,id_pventa,dir1,
 dir2,dir3,ruta_financiero,estatus_financiero,fecha_apertura,fecha_cierre,abasto_automatico,dias_visita,pventa_alterno,
 id_cliente,id_subcliente,id_ubicacion,cash,sale,lectura_monedero,cap_monedero,tubo1,tubo2,tubo3,tubo4,cap_tubo1,
-cap_tubo2,cap_tubo3,cap_tubo4,rowguid) values
-(13288,	'HOME DEPOT TOLUCA SK',	'SK', 59,	0,0,0,0,0,0,GETDATE(),1,'','','','',
-'','','','','','','','','','','','','','AMERCADEO','MEXICO-NORTE','','','','','','','','','','','','',
+cap_tubo2,cap_tubo3,cap_tubo4,rowguid) VALUES
+(15332,	'HOME DEPOT HOME DEPOT JURIQUILLA CP SK',	'SK', 29,	0,0,0,0,0,0,GETDATE(),1,'','','','',
+'','','','','','','','','','','','','','AMERCADEO','QUERETARO','','','','','','','',GETDATE(),GETDATE(),'','','',
 '','','','','','','','','','','','','','','',NEWID())
 
-update pventas set nombre='HOME DEPOT TOLUCA RF' where pventa=13289
+UPDATE pventas SET fecha_cierre=getdate() WHERE pventa=15332
+
+14113	Bimbo	HOME DEPOT NUEVO LAREDO	123067608256	SNACKS	USI	3538	Home Depot	COMEDOR	REFORMA # 5601	LAS ALAMEDAS PLAZA REFORMA	NUEVO LAREDO	TAMAULIPAS	88001	14113	Bimbo	A825	Serie Duplicada	21-Oct-11					
 
 
-13288	HOME DEPOT TOLUC SK	SK	59
-13289	HOME DEPOT TOLUCA RF	RF	59
+DELETE pventas WHERE pventa=14113 AND nombre = 'HOME DEPOT HOME DEPOT JURIQUILLA CP SK'
 
-/*ESE SCRIPT ES PARA AGREGAR PUNTOS DE VENTA DE VENDING, LO ÚNICO QUE HAY QUE CAMBIAR ES EL ID DE LA PLAZA Y EL 
+/*ESE SCRIPT ES PARA AGREGAR PUNTOS DE VENTA DE VENDING, LO ï¿½NICO QUE HAY QUE CAMBIAR ES EL ID DE LA PLAZA Y EL 
 NOMBRE*/
+
+SELECT * FROM empleados WHERE nombre LIKE '%beatriz%' AND cve_Sucursal=4 AND estatus='ALTA'

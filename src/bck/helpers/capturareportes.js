@@ -8,21 +8,23 @@ module.exports.getpventas=async()=>{
     const pventas= await (await poolvoficiname).query(queries.getpventas)
     for (var i = 0; i < pventas.recordset.length; i++) {
         arraypventas.push(pventas.recordset[i]);
+        arraypventas[i].nombre=arraypventas[i].nombre.trim()
     }
-    return arraypventas;
+    return arraypventas
 }
 
-module.exports.getplazatipomaq=async(nombrepventa)=>{
+module.exports.getplazatipomaq=async(nombrepventa,nopventa)=>{
     //console.log(nombrepventa)
     let nombrepuntoventa=nombrepventa.replace(/\s+/g,' ').replace('HOME DEPOT','').trim()
-    let infopventa=await(await poolvoficiname).query(queries.getinfopventa.replace('?',nombrepuntoventa))
+    let infopventa=await(await poolvoficiname).query(queries.getinfopventa
+        .replace('?',nombrepuntoventa)
+        .replace('nopventa',nopventa))
     let idplaza=infopventa.recordset[0].plaza
     infopventa.recordset[0].plaza=await(await poolkpos).query(queries.getplaza.replace('?',idplaza))
-    //console.log(queries.getinfopventa.replace('?',nombrepuntoventa))
-    //infopventa.recordset[0].plaza=infopventa.recordset[0].plaza.trim()
     infopventa.recordset[0].plaza=infopventa.recordset[0].plaza.recordset[0].plaza.trim()
     infopventa.recordset[0].tipomaq=infopventa.recordset[0].tipomaq.trim()
     infopventa.recordset[0].pventa=infopventa.recordset[0].pventa.trim()
+    //console.log(infopventa)
     return infopventa
 }
 
@@ -31,7 +33,7 @@ module.exports.guardareporte=async(reporte)=>{
         reporte.tiporeporta=''
     }
     if (reporte.quienreporta=='' || reporte.tipomaq=='' || reporte.npventa=='' || reporte.pventa=='' || reporte.aquienreporta=='' || reporte.observaciones=='' || reporte.tiporeporta=='' || reporte.plaza=='') {
-        console.log(reporte)
+        //console.log(reporte)
         return false
     }
     else{
@@ -46,9 +48,9 @@ module.exports.guardareporte=async(reporte)=>{
         .replace('usertype',reporte.tiporeporta)
         .replace('telephone',reporte.telefono)
         .replace('place',reporte.plaza)
-        console.log(reporte)
+        //console.log(reporte)
         let guardareporte=await(await pooldwh).query(report)
-        console.log(report)
+        //console.log(report)
         return true
     }
 }
