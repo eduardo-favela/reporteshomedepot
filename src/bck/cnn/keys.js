@@ -13,6 +13,7 @@ function leerConexionkpos() {
         password: file.toObject().kpos.contrasena,
         database: file.toObject().kpos.baseDatos,
         encrypt:false,
+        options: { "requestTimeout": 300000 },
         pool: {
             max: 10,
             min: 0,
@@ -31,6 +32,7 @@ function leerConexiondwh() {
         password: file.toObject().dwh.contrasena,
         database: file.toObject().dwh.baseDatos,
         encrypt:false,
+        options: { "requestTimeout": 300000 },
         pool: {
             max: 10,
             min: 0,
@@ -49,6 +51,7 @@ function leerConexionvoficiname() {
         password: file.toObject().voficiname.contrasena,
         database: file.toObject().voficiname.baseDatos,
         encrypt:false,
+        options: { "requestTimeout": 300000 },
         pool: {
             max: 10,
             min: 0,

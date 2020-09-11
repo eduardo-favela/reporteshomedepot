@@ -1,7 +1,7 @@
 {
   "name": "reportes_home_depot_kiosko",
-  "version": "1.4.0",
-  "description": "Aplicacion para generar reportes de callcenter de home depot.",
+  "version": "2.0.0",
+  "description": "Aplicacion para generar reportes de callcenter de home depot y kiosko.",
   "main": "src/index.js",
   "scripts": {
     "start": "electron src/index.js",

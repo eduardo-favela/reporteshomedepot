@@ -21,8 +21,23 @@
     </button>
   </nav>
 </div>
-<div class="container" style="margin-top: 10%;" id="contenedorprincipal">
-    <div class="row">
+
+<div class="container mt-5">
+  <div class="row d-flex justify-content-center">
+    <div class="col-md-4">
+      <div class="form-group">
+        <h4 style="text-align: center;">Tipo de reporte</h4>
+        <select id="tiporeporte" class="form-control mt-4" onchange="cambiotiporeporte()">
+          <option selected value="Vending">Vending</option>
+          <option>Kiosko</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4" id="contenedorprincipal">
+    <div class="row" id="formvending">
         <div class="col-md-4 mt-1">
           <div class="form-group">
             <h5>Persona que reporta</h5>
@@ -71,10 +86,80 @@
           <div class="form-group">
             <h5>Observaciones</h5>
             <textarea class="form-control" id="observaciones" rows="4" 
-            placeholder="Observaciones del problema que originó el reporte"></textarea>
+            placeholder="Observaciones del problema que originó el reporte" maxlength="255"></textarea>
           </div>
         </div>
     </div>
+
+    <div class="row" id="formkiosko" style="display: none;">
+      <div class="col-md-3 mt-1">
+        <div class="form-group">
+          <h5>Persona que reporta</h5>
+          <input type="text" class="form-control" id="quienreportaksnacks" 
+          placeholder="Nombre de quien reporta">
+          <input id="rutaksnacks" type="hidden">
+          <input id="npventaksnacks" type="hidden">
+        </div>
+        <div class="form-group mt-1">
+          <h5>Teléfono</h5>
+          <input type="text" class="form-control" id="telefonoksnacks" 
+          placeholder="Teléfono de quien reporta">
+        </div>
+        <div class="form-group">
+          <h5>Punto de venta</h5>
+          <input type="text" class="form-control" id="pventaksnacks" 
+          placeholder="Punto de venta del reporte">
+        </div>
+      </div>
+      <div class="col-md-3 mt-1">
+        <div class="form-group">
+          <h5>Recibe el reporte</h5>
+          <input type="text" class="form-control" id="aquienreportaksnacks" 
+          placeholder="Nombre de quien recibe el reporte">
+        </div>
+        <div class="form-group mt-1">
+          <h5>Plaza</h5>
+          <input type="text" class="form-control" id="plazaksnacks" 
+          placeholder="Plaza del punto de venta" readonly>
+        </div>
+        <div class="form-group mt-1">
+          <h5>Tipo de punto de venta</h5>
+          <input type="text" class="form-control" id="tipoksnacks" 
+          placeholder="Tipo de punto de venta" readonly>
+        </div>
+      </div>
+      <div class="col-md-3 mt-1">
+        <div class="form-group mt-1">
+          <h5>Tipo de anomalía</h5>
+          <select id="tipoanomaliaksnacks" class="form-control">
+          </select>
+        </div>
+        <div class="form-group mt-1">
+          <h5>Departamento responsable</h5>
+          <select id="deptoksnacks" class="form-control" onchange="cambiodepto()">
+            <option selected value="seleccionar">Seleccionar...</option>
+            <option>Sistemas</option>
+            <option>Mantenimiento</option>
+          </select>
+        </div>
+        <div class="form-group mt-1">
+          <h5>Tipo de persona que reporta</h5>
+          <select id="tiporeportaksnacks" class="form-control">
+            <option selected value="seleccionar">Seleccionar...</option>
+            <option>Usuario Externo</option>
+            <option>Empleado</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3 mt-1">
+        <div class="form-group">
+          <h5>Observaciones</h5>
+          <textarea class="form-control" id="observacionesksnacks" rows="8" 
+          placeholder="Observaciones del problema que originó el reporte" maxlength="255"></textarea>
+        </div>
+      </div>
+  </div>
+
     <div class="row mt-5">
       <div class="col-md-8 offset-2 d-flex justify-content-center">
         <button class="col-md-4 btn btn-primary mr-5" type="button" onclick="guardar()">Guardar reporte</button>
@@ -98,7 +183,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body d-flex justify-content-center" id="modalbody">
+      <div class="modal-body d-flex justify-content-between" id="modalbody">
         
       </div>
       <div class="modal-footer">
@@ -112,32 +197,79 @@
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="vereportesmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-lg modal-dialog-scrollable" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="titulomodalreportes">Modificar reportes</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id="modalbodyreportes">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-4 form-group mt-1">
-              <h5>Fecha inicial</h5>
-              <input type="date" id="fecha1" onchange="consultareportes()">
+      <div class="modal-header no-border">
+        <div class="container" style="min-width:100%;">
+          <div class="row" style="min-width:100%;">
+            <h5 class="modal-title" id="titulomodalreportes">Modificar reportes</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="tab-reportes-fecha" data-toggle="tab" href="#nav-repfecha" role="tab" aria-controls="home" aria-selected="true">Filtrar reportes por fecha y tipo</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="tab-reportes-folio" data-toggle="tab" href="#nav-repfolio" role="tab" aria-controls="profile" aria-selected="false">Buscar reporte por folio y tipo</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="nav-repfecha" role="tabpanel" aria-labelledby="reportes-fecha">
+                <div class="row mt-4">
+                  <div class="col-md-3 form-group mt-1">
+                    <h5>Fecha inicial</h5>
+                    <input type="date" id="fecha1" onchange="consultareportes()">
+                  </div>
+                  <div class="col-md-3 form-group mt-1">
+                    <h5>Fecha límite</h5>
+                    <input type="date" id="fecha2" onchange="consultareportes()">
+                  </div>
+                  <div class="col-md-3 form-group mt-1">
+                    <h5>Tipo de reportes</h5>
+                    <select id="tiporeportemodal" class="form-control" onchange="consultareportes()">
+                      <option selected value="seleccionar">Seleccionar...</option>
+                      <option>Kiosko</option>
+                      <option>Vending</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3 d-flex justify-content-end form-group mt-2">
+                    <button class="btn btn-danger" onclick="consultareportes()" id="refrescareportes"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                  </div>
+              </div>
             </div>
-            <div class="col-md-4 form-group mt-1">
-              <h5>Fecha límite</h5>
-              <input type="date" id="fecha2" onchange="consultareportes()">
+              <div class="tab-pane fade" id="nav-repfolio" role="tabpanel" aria-labelledby="reportes-folio">
+                <div class="row mt-4">
+                  <div class="col-md-4">
+                    <h5>Buscar reporte</h5>
+                    <div class="input-group">
+                      <input type="text" id="folioreporte" placeholder="Escribe el folio de reporte" class="form-control" onkeypress="return onlyNumberKey(event)">
+                      <div class="input-group-append">
+                          <button class="btn btn-secondary" type="button" onclick="buscareporte()">
+                              <i class="fa fa-search"></i>
+                          </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 form-group">
+                    <h5>Tipo de reporte</h5>
+                    <select id="tiporeportefolio" class="form-control" onchange="buscareporte()">
+                      <option selected value="seleccionar">Seleccionar...</option>
+                      <option>Kiosko</option>
+                      <option>Vending</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="col-md-4 d-flex justify-content-end form-group mt-2">
-              <button class="btn btn-danger" onclick="consultareportes()" id="refrescareportes"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-            </div>
+          </div>
         </div>
-        <div class="row">
+      <div class="modal-body" style="padding:0;" id="modalbodyreportes">
+        <div class="container" style="min-width: 98%;">
+        <div class="row mt-4">
           <div class="col-md-12">
             <table class="table table-responsive-lg">
-                <thead>
-                    <tr class="bg-info">
+                <thead id="headtabla">
+                    <tr class="inform">
                       <th scope="col">Folio</th>
                       <th scope="col">Punto de venta</th>
                       <th scope="col">Fecha del reporte</th>

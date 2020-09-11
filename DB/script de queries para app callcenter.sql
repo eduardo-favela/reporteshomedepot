@@ -1,9 +1,29 @@
 SELECT * FROM reporteservicio WHERE atendio='CALLCENTER' AND nombre LIKE '%HOME DEPOT%'
-AND anomalia=18 AND fechatomarep BETWEEN '2020-08-01' AND '2020-08-14' ORDER BY folio DESC
+AND anomalia=18 AND fechatomarep BETWEEN '2019-01-01' AND getdate() ORDER BY folio DESC
+
+
+SELECT folio, (pventa+' - '+nombre) puntoventa, 
+CONVERT(VARCHAR(10), fechatomarep, 103) AS [fechatomarep], telefono,quienreporta,estatus,observaciones
+FROM reporteservicio WHERE folio=198901 AND tipomaq NOT  IN ('SK','Sk','RF','Rf','RFS','Rfs','RFs','rf','rfs','sk') ORDER BY folio DESC
+
+/*kiosko 198899*/
+
+/*prueba kpos 198900
+198901*/
+
+/*home depot 198892*/
+
+SELECT * FROM reporteservicio WHERE fechatomarep BETWEEN '2020-08-01' AND getdate() ORDER BY folio DESC
+
+
+SELECT * FROM (SELECT (RTRIM(LTRIM(pventa))+'_'+nombre) nombre FROM pventas WHERE
+id_empresa='AMERCADEO' AND nombre LIKE '%HOME DEPOT%') a GROUP BY nombre
+
+
 
 SELECT folio, (pventa+' - '+nombre) puntoventa, fechatomarep, telefono,quienreporta,estatus,observaciones2 
 FROM reporteservicio WHERE atendio='CALLCENTER' AND nombre LIKE '%HOME DEPOT%'
-AND anomalia=18 AND fechatomarep BETWEEN '2020-01-01' AND '2020-07-27' AND estatus<>'LIBERADO' ORDER BY folio DESC
+AND anomalia=18 AND fechatomarep BETWEEN 'estatus<>'LIBERADO' ORDER BY folio DESC2020-01-01' AND '2020-07-27' AND estatus<>'LIBERADO' ORDER BY folio DESC
 
 UPDATE reporteservicio SET fechaterminoreporte='2020-07-23' WHERE folio=198463
 
@@ -47,6 +67,9 @@ pventa
 quienreporta 
 tipomaq*/
 
-DELETE reporteservicio WHERE folio IN (198660,198659)
+/*DELETE reporteservicio WHERE folio IN (198848)*/
 
-UPDATE reporteservicio SET fechaterminoreporte='2020-08-07' WHERE folio=198582
+/*UPDATE reporteservicio SET observaciones='YA TIENE UNA SEMANA QUE ESTA HACIENDO UN RUIDO MUY FEO LA LLELERA' WHERE folio=198901*/
+
+
+SELECT * FROM reporteservicio WHERE folio=198848

@@ -1,9 +1,10 @@
-SELECT * FROM pventas WHERE id_empresa='AMERCADEO' 
-AND nombre LIKE '%HOME DEPOT %';
+SELECT * FROM pventas WHERE id_empresa='KSNACKS';
+
+SELECT * FROM (SELECT (RTRIM(LTRIM(pventa))+'-'+nombre) nombre FROM pventas WHERE
+id_empresa='KSNACKS') a GROUP BY nombre
+
 /*and pventa=9531 
 order by fecha_cierre desc and estatus='normal'*/
-
-SELECT CONCAT(pventa,' ',nombre) FROM pventas
 
 SELECT pventa FROM pventas WHERE 
 id_empresa='AMERCADEO' AND nombre LIKE '%HOME DEPOT%' GROUP BY pventa
@@ -51,4 +52,7 @@ SELECT * FROM transfpventa WHERE pventa_ori=2401 AND pventa_dest=2228 ORDER BY f
 /*8139        HOME DEPOT SAN LUIS CP Sk
 
 HOME DEPOT  SENDERO PASILLO Sk
-HOME DEPOT ALFREDO DEL MAZO PASILLO SK
+HOME DEPOT ALFREDO DEL MAZO PASILLO SK*/
+
+
+
