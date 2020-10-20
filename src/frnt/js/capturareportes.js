@@ -113,7 +113,7 @@ function vereportes(){
       })
 }
 ipcRenderer.on('getplazatipomaqresult',(event,infopventa)=>{
-    console.log(infopventa);
+    /* console.log(infopventa); */
     if(tiporeporte=="Vending"){
         $("#plaza").empty()
         $("#tipomaq").empty()
@@ -156,7 +156,7 @@ function guardar(){
         reporte.plaza=$("#plazaksnacks").val().toString().toUpperCase()
         reporte.tipomaq=$("#tipoksnacks").val().toString().toUpperCase()
         reporte.ruta=$("#rutaksnacks").val().toString().toUpperCase()
-        reporte.observaciones=$('#deptoksnacks').val().toString().toUpperCase()+"-"+
+        reporte.observaciones=$('#deptoksnacks').val().toString().toUpperCase()+"&"+
         $("#observacionesksnacks").val().toString().toUpperCase()
         reporte.anomalia=$("#tipoanomaliaksnacks").val()
         reporte.tiporeporta=$("#tiporeportaksnacks").val().toString().toUpperCase()
@@ -218,9 +218,10 @@ function consultareportes(){
 
         let parametrosreportes={}
         parametrosreportes.fecha1=$("#fecha1").val().toString()
-        parametrosreportes.fecha2=$("#fecha2").val().toString()
+        parametrosreportes.fecha2=$("#fecha2").val().toString()+" 23:59:00"
         parametrosreportes.tiporeportes=$('#tiporeportemodal').val().toString()
         tiporeportemodal=parametrosreportes.tiporeportes
+        console.log(parametrosreportes)
         ipcRenderer.send('consultareportes',parametrosreportes)
     }
 }
@@ -260,7 +261,7 @@ function onlyNumberKey(evt) {
 function cambiotiporeporte(){
     limpiar()
     tiporeporte=$("#tiporeporte").val().toString()
-    console.log(tiporeporte)
+    /* console.log(tiporeporte) */
     if(tiporeporte=="Vending"){
         $('#formkiosko').css("display","none")
         $('#formvending').show()
@@ -299,6 +300,7 @@ function tablakiosko(){
                         <th scope="col">Departamento</th>
                         <th scope="col">Persona que reportó</th>
                         <th scope="col">Observaciones</th>
+                        <th scope="col">Observaciones de liberación</th>
                         <th scope="col"></th>
                         </tr>`
     headtabla.empty()
@@ -313,7 +315,7 @@ ipcRenderer.on('getanomaliasresult',(event,anomalias)=>{
     $.each(anomalias, function(i, r) {
         content+=`<option value=${r.id}>${r.anomalia}</option>`
     })
-    console.log(anomalias)
+    /* console.log(anomalias) */
     selectanomalia.append(content)
 })
 
@@ -321,11 +323,11 @@ ipcRenderer.on('getanomaliasresult',(event,anomalias)=>{
 ipcRenderer.on('consultareportesresult',(event,respuesta)=>{
     let result=respuesta.reportes
     if(result){
+        let opcionestatus=""
         if(respuesta.tipo=="Vending"){
             tablavending()
             let cont=""
             $.each(result, function(i, r) {
-                let opcionestatus=""
                 if(r.estatus==="PENDIENTE"){
                     opcionestatus="REPORTADO"
                 }
@@ -387,41 +389,94 @@ ipcRenderer.on('consultareportesresult',(event,respuesta)=>{
         else if(respuesta.tipo=="Kiosko"){
             tablakiosko()
             let cont=""
+            let depto=""
+            let observaciones2=""
             $.each(result, function(i, r) {
+                if(r.estatus==="PENDIENTE"){
+                    opcionestatus="REPORTADO"
+                    observaciones2=`<textarea type='text' placeholder='Observaciones 
+                    de liberación de reporte' class='observacionesliberacion' readonly></textarea>`
+                }
+                else if(r.estatus==="REPORTADO"){
+                    opcionestatus="PENDIENTE"
+                    observaciones2=`<textarea type='text' placeholder='Observaciones 
+                    de liberación de reporte' class='observacionesliberacion' readonly></textarea>`
+                }
+                else if(r.estatus==="LIBERADO"){
+                    observaciones2=`<p class='observacionesliberacion'>${r.observaciones2}<p>`
+                }
+                if(r.depto){
+                    depto=`<p>${r.depto}<p>`
+                }
+                else{
+                    depto=`<select id='depto' class='departamentoselect'>                   
+                                <option selected value="seleccionar">Seleccionar...</option>
+                                <option>Sistemas</option>
+                                <option>Mantenimiento</option>
+                            </select>`
+                }
                 cont += `<tr>
                 <td>${r.folio}</td>
                 <td>${r.puntoventa}</td>
                 <td>${r.fechatomarep}</td>
-                <td>${r.estatus}</td>
-                <td><select id='depto'>                   
-                        <option selected value="seleccionar">Seleccionar...</option>
-                        <option>Sistemas</option>
-                        <option>Mantenimiento</option>
+                <td>
+                    <select id='estatusrep' class='estatusreporteselect'>
+                        <option>${opcionestatus}</option>
+                        <option selected value=${r.estatus}>${r.estatus}</option>
+                        <option>LIBERADO</option>
                     </select>
                 </td>
+                <td>${depto}</td>
                 <td>${r.quienreporta}</td>
-                <td><p>${r.observaciones}<p></td>
+                <td><p class='observaciones1'>${r.observaciones}<p></td>
+                <td>${observaciones2}</td>
                 <td><button class='btn btn-success btnGuardarcambios' type='button'>
                 <i class='fa fa-floppy-o' aria-hidden='true'></i></td>
                 </tr>`;
             });
             $("#bodytabla").empty()
             $("#bodytabla").append(cont)
+
+            $("#bodytabla tr td #estatusrep").change(function(){
+                $(this).addClass('selected').siblings().removeClass('selected');
+                let textarea=$(this).parent().closest('td').siblings().find('textarea.observacionesliberacion');
+                if($(this).val()==="LIBERADO"){
+                    textarea.attr('readonly',false);
+                    textarea.focus();
+                }
+                else{
+                    textarea.empty()
+                    textarea.attr('readonly',true);
+                }
+            })
+
             $(".btnGuardarcambios").click(function(){
                 let updatereporte={}
                 updatereporte.folio=$(this).parent().siblings('td:first').html()
-                updatereporte.observaciones=$(this).parent().closest('td').siblings().find('p').html().toString().toUpperCase()
-                updatereporte.departamento=$(this).parent().closest('td').siblings().find('select').val().toString().toUpperCase()
+                updatereporte.observaciones=$(this).parent().closest('td').siblings().find('p.observaciones1').html().toString().toUpperCase()
+                updatereporte.departamento=$(this).parent().closest('td').siblings().find('select.departamentoselect').val().toString().toUpperCase()
+                updatereporte.estatus=$(this).parent().closest('td').siblings().find('select.estatusreporteselect').val().toString().toUpperCase()
                 updatereporte.tiporeporte="Kiosko"
-                $(this).parent().parent().remove()
-                ipcRenderer.send('guardarcambios',updatereporte)
+                updatereporte.observaciones2=$(this).parent().closest('td').siblings().find('textarea.observacionesliberacion').val()
+
+                if(updatereporte.estatus==="LIBERADO"){
+                    if(updatereporte.observaciones2&&updatereporte.estatus){
+                        $(this).parent().parent().remove()
+                        ipcRenderer.send('guardarcambios',updatereporte)
+                    }
+                }
+                else{
+                    if(updatereporte.estatus){
+                        $(this).parent().parent().remove()
+                        ipcRenderer.send('guardarcambios',updatereporte)
+                    }
+                }
             })
         }
     }
 })
 
-ipcRenderer.on('guardarcambiosresult',(event,resultado)=>{
-})
+ipcRenderer.on('guardarcambiosresult',(event,resultado)=>{})
 
 ipcRenderer.on('guardareporteresult',(event,result)=>{
     $('#Confirmaregistro').modal('toggle');
@@ -450,50 +505,75 @@ ipcRenderer.on('guardareporteresult',(event,result)=>{
     }
 })
 
+ipcRenderer.on('exportareportesexcelresult',(event,respuesta)=>{
+    $("#spinnerexport").empty()
+    exportexcelmodal();
+    $('#Confirmaregistro').modal('toggle');
+    let bodymodal=$("#modalbody");
+    bodymodal.empty()
+    console.log(respuesta)
+    if(respuesta){
+        let contentconfirmed=`<h5>El archivo se generó correctamente</h5>
+        <i class="fa fa-check-circle" aria-hidden="true"></i>`
+        bodymodal.append(contentconfirmed)
+        let botonmodal=$("#botonmodal")
+        botonmodal.removeClass('btn-warning')
+        botonmodal.addClass('btn-success')
+    }
+    else{
+        let contenterror=`<h5>Ocurrió un error al generar el archivo</h5>
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>`
+        bodymodal.append(contenterror)
+        $("#titulomodal").text("Error")
+        let botonmodal=$("#botonmodal")
+        botonmodal.removeClass('btn-success')
+        botonmodal.addClass('btn-warning')
+        let button = document.getElementById("botonmodal")
+        button.setAttribute("onclick", "cerrarmodal()")
+    }
+})
+
 ipcRenderer.on('buscareportefolioresult',(event,r)=>{
     
     if(r){
-        if(r=="SISTEMAS"||r=="MANTENIMIENTO"){
-            continuarcapturarep()
-            $('#Confirmaregistro').modal('toggle');
-            let bodymodal=$("#modalbody");
-            bodymodal.empty()
-            let contenterror=`<h5>El reporte ya fue asignado al departamento de ${r.toLowerCase()}.</h5>
-            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>`
-            bodymodal.append(contenterror)
-            $("#titulomodal").text("Reporte asignado.")
-            let botonmodal=$("#botonmodal")
-            botonmodal.removeClass('btn-warning')
-            botonmodal.removeClass('btn-success')
-            botonmodal.removeClass('btn-danger')
-            botonmodal.addClass('btn-primary')
-            let button = document.getElementById("botonmodal")
-            button.setAttribute("onclick", "cerrarmodal()")
-        }
-        else{
-            let opcionestatus=""
-            if(r.estatus==="PENDIENTE"){
-                opcionestatus="REPORTADO"
-            }
-            else{
-                opcionestatus="PENDIENTE"
-            }
-            if(r.tiporeporte=="Vending"){
+        let opcionestatus=""
+            if(r.tipo=="Vending"){
+                r=r.reportes[0]
+                let observaciones2=""
+                let selectestatus=""
+                if(r.estatus==="PENDIENTE"){
+                    opcionestatus="REPORTADO"
+                    observaciones2=`<textarea type='text' placeholder='Observaciones 
+                    de liberación de reporte' class='observacionesliberacion' readonly></textarea>`
+                    selectestatus=`<select id='estatusrep'>
+                    <option>${opcionestatus}</option>
+                    <option selected value=${r.estatus}>${r.estatus}</option>
+                    <option>LIBERADO</option>
+                </select>`
+                }
+                else if(r.estatus==="REPORTADO"){
+                    opcionestatus="PENDIENTE"
+                    observaciones2=`<textarea type='text' placeholder='Observaciones 
+                    de liberación de reporte' class='observacionesliberacion' readonly></textarea>`
+                    selectestatus=`<select id='estatusrep'>
+                    <option>${opcionestatus}</option>
+                    <option selected value=${r.estatus}>${r.estatus}</option>
+                    <option>LIBERADO</option>
+                </select>`
+                }
+                else if(r.estatus==="LIBERADO"){
+                    observaciones2=`<p class='observacionesliberacion'>${r.observaciones2}<p>`
+                    selectestatus=`<p class='departamentoselect'>${r.estatus}<p>`
+                }
                 tablavending()
                 let cont = `<tr>
                 <td>${r.folio}</td>
                 <td>${r.puntoventa}</td>
                 <td>${r.fechatomarep}</td>
                 <td>${r.telefono}</td>
-                <td><select id='estatusrep'>
-                        <option>${opcionestatus}</option>
-                        <option selected value=${r.estatus}>${r.estatus}</option>
-                        <option>LIBERADO</option>
-                    </select>
-                </td>
+                <td>${selectestatus}</td>
                 <td> ${r.quienreporta}</td>
-                <td><textarea type='text' placeholder='Observaciones de liberación de reporte' readonly>
-                </textarea></td>
+                <td>${observaciones2}</td>
                 <td><button class='btn btn-success btnGuardarcambios' type='button'>
                 <i class='fa fa-floppy-o' aria-hidden='true'></i></td>
                 </tr>`;
@@ -532,28 +612,104 @@ ipcRenderer.on('buscareportefolioresult',(event,r)=>{
                     }
                 })
             }
-            else if(r.tiporeporte=="Kiosko"){
+            else if(r.tipo=="Kiosko"){
                 tablakiosko()
-                let cont = `<tr>
-                <td>${r.folio}</td>
-                <td>${r.puntoventa}</td>
-                <td>${r.fechatomarep}</td>
-                <td>${r.estatus}</td>
-                <td><select id='depto'>                   
-                        <option selected value="seleccionar">Seleccionar...</option>
-                        <option>Sistemas</option>
-                        <option>Mantenimiento</option>
-                    </select>
-                </td>
-                <td>${r.quienreporta}</td>
-                <td><p>${r.observaciones}<p></td>
-                <td><button class='btn btn-success btnGuardarcambios' type='button'>
-                <i class='fa fa-floppy-o' aria-hidden='true'></i></td>
-                </tr>`;
+                let cont=""
+                let depto=""
+                let dep=""
+                let observaciones2=""
+                let selectestatus=""
+                r=r.reportes
+                $.each(r, function(i, r) {
+                    if(r.estatus==="PENDIENTE"){
+                        opcionestatus="REPORTADO"
+                        observaciones2=`<textarea type='text' placeholder='Observaciones 
+                        de liberación de reporte' class='observacionesliberacion' readonly></textarea>`
+                        selectestatus=`<select id='estatusrep' class='estatusreporteselect'>
+                        <option>${opcionestatus}</option>
+                        <option selected value=${r.estatus}>${r.estatus}</option>
+                        <option>LIBERADO</option>
+                    </select>`
+                    }
+                    else if(r.estatus==="REPORTADO"){
+                        opcionestatus="PENDIENTE"
+                        observaciones2=`<textarea type='text' placeholder='Observaciones 
+                        de liberación de reporte' class='observacionesliberacion' readonly></textarea>`
+                        selectestatus=`<p class='departamentoselect'>${r.estatus}<p>`
+                        selectestatus=`<select id='estatusrep' class='estatusreporteselect'>
+                        <option>${opcionestatus}</option>
+                        <option selected value=${r.estatus}>${r.estatus}</option>
+                        <option>LIBERADO</option>
+                    </select>`
+                    }
+                    else if(r.estatus==="LIBERADO"){
+                        observaciones2=`<p class='observacionesliberacion'>${r.observaciones2}<p>`
+                        selectestatus=`<p class='departamentoselect'>${r.estatus}<p>`
+                    }
+                    if(r.depto){
+                        depto=`<p class='departamentoselect'>${r.depto}<p>`
+                        dep='p'
+                    }
+                    else{
+                        depto=`<select id='depto' class='departamentoselect'>                   
+                                    <option selected value="seleccionar">Seleccionar...</option>
+                                    <option>Sistemas</option>
+                                    <option>Mantenimiento</option>
+                                </select>`
+                        dep='select'
+                    }
+                    cont += `<tr>
+                    <td>${r.folio}</td>
+                    <td>${r.puntoventa}</td>
+                    <td>${r.fechatomarep}</td>
+                    <td>${selectestatus}</td>
+                    <td>${depto}</td>
+                    <td>${r.quienreporta}</td>
+                    <td><p class='observaciones1'>${r.observaciones}<p></td>
+                    <td>${observaciones2}</td>
+                    <td><button class='btn btn-success btnGuardarcambios' type='button'>
+                    <i class='fa fa-floppy-o' aria-hidden='true'></i></td>
+                    </tr>`;
+                });
                 $("#bodytabla").empty()
                 $("#bodytabla").append(cont)
+    
+                $("#bodytabla tr td #estatusrep").change(function(){
+                    $(this).addClass('selected').siblings().removeClass('selected');
+                    let textarea=$(this).parent().closest('td').siblings().find('textarea.observacionesliberacion');
+                    if($(this).val()==="LIBERADO"){
+                        textarea.attr('readonly',false);
+                        textarea.focus();
+                    }
+                    else{
+                        textarea.empty()
+                        textarea.attr('readonly',true);
+                    }
+                })
+    
+                $(".btnGuardarcambios").click(function(){
+                    let updatereporte={}
+                    updatereporte.folio=$(this).parent().siblings('td:first').html()
+                    updatereporte.observaciones=$(this).parent().closest('td').siblings().find('p.observaciones1').html().toString().toUpperCase()
+                    updatereporte.departamento=$(this).parent().closest('td').siblings().find(dep+'.departamentoselect').val().toString().toUpperCase()
+                    updatereporte.estatus=$(this).parent().closest('td').siblings().find('select.estatusreporteselect').val().toString().toUpperCase()
+                    updatereporte.tiporeporte="Kiosko"
+                    updatereporte.observaciones2=$(this).parent().closest('td').siblings().find('textarea.observacionesliberacion').val()
+    
+                    if(updatereporte.estatus==="LIBERADO"){
+                        if(updatereporte.observaciones2&&updatereporte.estatus){
+                            $(this).parent().parent().remove()
+                            ipcRenderer.send('guardarcambios',updatereporte)
+                        }
+                    }
+                    else{
+                        if(updatereporte.estatus){
+                            $(this).parent().parent().remove()
+                            ipcRenderer.send('guardarcambios',updatereporte)
+                        }
+                    }
+                })
             }
-        }
     }
     else{
         continuarcapturarep()
@@ -573,3 +729,13 @@ ipcRenderer.on('buscareportefolioresult',(event,r)=>{
         button.setAttribute("onclick", "cerrarmodal()")
     }
 })
+
+function exportexcelmodal(){$('#exportareportesmodal').modal('toggle')}
+function exprepexcel(){
+    let fecha=$('#fechaexprep').val().toString()
+    $("#spinnerexport").append(`<tr><td colspan=8><div class="spinner-border text-info" role="status">
+        <span class="sr-only">Loading...</span>
+      </div></td></tr>`)
+    ipcRenderer.send('exportareportesexcel',fecha)
+}
+

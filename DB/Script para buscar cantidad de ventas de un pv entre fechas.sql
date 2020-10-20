@@ -20,3 +20,13 @@ where mid.Articulo=00050 and Embarques.Fec_Recibo <> '' and embarques.PVenta=205
 select count(*) from ventas 
 inner join turnos on ventas.FolioTurno=turnos.folio
 where pventa=2078 and fecha between '2020-05-25' and '2020-06-30'
+
+select * from (select sum(TotalVenta) as total, Turnos.Folio as foliot from ventas 
+inner join turnos on ventas.FolioTurno=turnos.folio
+where Turnos.Fecha='2020-10-04' group by turnos.Folio) a where a.total>6000
+
+select * from turnos where folio='9E193243-6104-453D-A641-D6CD3AA89237' order by fecha desc
+
+select sum(TotalVenta) from ventas 
+inner join turnos on ventas.FolioTurno=turnos.folio
+where FolioTurno='9E193243-6104-453D-A641-D6CD3AA89237'

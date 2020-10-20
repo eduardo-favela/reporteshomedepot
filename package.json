@@ -1,12 +1,12 @@
 {
-  "name": "reportes_home_depot_kiosko",
-  "version": "2.0.0",
-  "description": "Aplicacion para generar reportes de callcenter de home depot y kiosko.",
+  "name": "reportes_callcenter_kiosko",
+  "version": "3.0.0",
+  "description": "Aplicacion para generar reportes de callcenter de kiosko.",
   "main": "src/index.js",
   "scripts": {
     "start": "electron src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package-win": "electron-packager . ReportesHomeDepot --overwrite --asar --platform=win32 --arch=ia32 --icon=assets/logo.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Reportes Home Depot Kiosko\"",
+    "package-win": "electron-packager . ReportesKiosko --overwrite --asar --platform=win32 --arch=ia32 --icon=assets/logo.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Reportes CallCenter Kiosko\"",
     "create-installer-win": "node installers/createinstaller.js"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
     "bootstrap": "^4.5.0",
     "dotenv": "^8.2.0",
     "edit-json-file": "^1.4.0",
+    "excel4node": "^1.7.2",
     "jquery": "^3.5.1",
     "mssql": "^6.2.0",
     "xlsx-to-json": "^0.3.0"

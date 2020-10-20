@@ -14,12 +14,12 @@ function getInstallerConfig() {
     const outPath = path.join(rootPath, 'release-builds')
 
     return Promise.resolve({
-        appDirectory: path.join(outPath, 'ReportesHomeDepot-win32-ia32/'),
+        appDirectory: path.join(outPath, 'ReportesKiosko-win32-ia32/'),
         authors: 'Eduardo Favela',
         noMsi: true,
         outputDirectory: path.join(outPath, 'windows-installer'),
-        exe: 'ReportesHomeDepot.exe',
-        setupExe: 'ReportesHomeDepotInstaller.exe',
+        exe: 'ReportesKiosko.exe',
+        setupExe: 'ReportesKioskoInstaller.exe',
         setupIcon: path.join(rootPath, 'assets', 'logo.ico')
     })
 }

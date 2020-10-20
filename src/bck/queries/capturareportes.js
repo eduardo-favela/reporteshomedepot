@@ -1,5 +1,5 @@
 module.exports.getpventas=`select * from (SELECT (RTRIM(LTRIM(pventa))+'_'+nombre) nombre from pventas where
-id_empresa='AMERCADEO' and nombre like '%HOME DEPOT%') a group by nombre`;
+id_empresa='AMERCADEO') a group by nombre`;
 
 
 module.exports.getpventasksnacks=`select * from (SELECT (RTRIM(LTRIM(pventa))+'_'+nombre) 
@@ -24,7 +24,8 @@ module.exports.getplaza=`select sucursal plaza from Sucursales where id=?`
 
 module.exports.getreportes=`SELECT folio, (pventa+' - '+nombre) puntoventa, 
 CONVERT(VARCHAR(10), fechatomarep, 103) AS [fechatomarep], telefono,quienreporta,estatus,observaciones2 
-FROM reporteservicio WHERE atendio='CALLCENTER' AND nombre LIKE '%HOME DEPOT%'
+FROM reporteservicio WHERE atendio='CALLCENTER' and 
+tipomaq in ('SK','Sk','RF','Rf','RFS','Rfs','RFs','rf','rfs','sk')
 AND anomalia=18 AND fechatomarep BETWEEN 'fecha1' AND 'fecha2'
 and estatus<>'LIBERADO' ORDER BY folio DESC`
 
@@ -52,3 +53,15 @@ not in ('SK','Sk','RF','Rf','RFS','Rfs','RFs','rf','rfs','sk')`
 module.exports.updateregistrokiosko=`UPDATE reporteservicio set fechareptecnico=GETDATE(), 
 observaciones='nuevasobservaciones'
 WHERE folio=serial`
+
+module.exports.getdeptosreportes=`select depto from (SELECT SUBSTRING(reporteservicio.observaciones,
+0,CHARINDEX('&',reporteservicio.observaciones,0)) as depto
+FROM reporteservicio
+where fechatomarep between 'fecha1' and 'fecha2') a where depto <> '' group by depto`
+
+module.exports.getreportsfexcel=`SELECT convert (varchar(10),folio) as folio, (pventa+' - '+nombre) puntoventa,
+CONVERT(VARCHAR(10), fechatomarep, 103) AS [fechatomarep], telefono,quienreporta,estatus,
+SUBSTRING(reporteservicio.observaciones,CHARINDEX('&',reporteservicio.observaciones)+1, 
+len(reporteservicio.observaciones)) observaciones
+from reporteservicio where fechatomarep between'fecha1' and 'fecha2' and
+SUBSTRING(reporteservicio.observaciones,0,CHARINDEX('&',reporteservicio.observaciones,0))='depto'`

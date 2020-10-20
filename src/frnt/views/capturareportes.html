@@ -16,15 +16,16 @@
     <a class="navbar-brand">
       <img src="../../icons/logo.png"class="d-inline-block align-top" alt="">
     </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" 
+    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+    aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-  </nav>
 </div>
 
 <div class="container mt-5">
-  <div class="row d-flex justify-content-center">
-    <div class="col-md-4">
+  <div class="row">
+    <div class="col-md-4 offset-4">
       <div class="form-group">
         <h4 style="text-align: center;">Tipo de reporte</h4>
         <select id="tiporeporte" class="form-control mt-4" onchange="cambiotiporeporte()">
@@ -32,6 +33,11 @@
           <option>Kiosko</option>
         </select>
       </div>
+    </div>
+    <div class="col-md-4 d-flex justify-content-end">
+      <a class="btn" onclick="exportexcelmodal()">
+        <img src="../images/excel.png"class="img-fluid" alt="">
+      </a>
     </div>
   </div>
 </div>
@@ -140,6 +146,7 @@
             <option selected value="seleccionar">Seleccionar...</option>
             <option>Sistemas</option>
             <option>Mantenimiento</option>
+            <option>Otro</option>
           </select>
         </div>
         <div class="form-group mt-1">
@@ -195,101 +202,130 @@
 
 <!-- Modal para ver reportes-->
 <div class="modal fade" data-keyboard="false" data-backdrop="static" id="vereportesmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-lg modal-dialog-scrollable" role="document">
-    <div class="modal-content">
-      <div class="modal-header no-border">
-        <div class="container" style="min-width:100%;">
-          <div class="row" style="min-width:100%;">
-            <h5 class="modal-title" id="titulomodalreportes">Modificar reportes</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="tab-reportes-fecha" data-toggle="tab" href="#nav-repfecha" role="tab" aria-controls="home" aria-selected="true">Filtrar reportes por fecha y tipo</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="tab-reportes-folio" data-toggle="tab" href="#nav-repfolio" role="tab" aria-controls="profile" aria-selected="false">Buscar reporte por folio y tipo</a>
-            </li>
-          </ul>
-          <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="nav-repfecha" role="tabpanel" aria-labelledby="reportes-fecha">
-                <div class="row mt-4">
-                  <div class="col-md-3 form-group mt-1">
-                    <h5>Fecha inicial</h5>
-                    <input type="date" id="fecha1" onchange="consultareportes()">
-                  </div>
-                  <div class="col-md-3 form-group mt-1">
-                    <h5>Fecha límite</h5>
-                    <input type="date" id="fecha2" onchange="consultareportes()">
-                  </div>
-                  <div class="col-md-3 form-group mt-1">
-                    <h5>Tipo de reportes</h5>
-                    <select id="tiporeportemodal" class="form-control" onchange="consultareportes()">
-                      <option selected value="seleccionar">Seleccionar...</option>
-                      <option>Kiosko</option>
-                      <option>Vending</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3 d-flex justify-content-end form-group mt-2">
-                    <button class="btn btn-danger" onclick="consultareportes()" id="refrescareportes"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                  </div>
-              </div>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header no-border">
+          <div class="container" style="min-width:100%;">
+            <div class="row" style="min-width:100%;">
+              <h5 class="modal-title" id="titulomodalreportes">Modificar reportes</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
-              <div class="tab-pane fade" id="nav-repfolio" role="tabpanel" aria-labelledby="reportes-folio">
-                <div class="row mt-4">
-                  <div class="col-md-4">
-                    <h5>Buscar reporte</h5>
-                    <div class="input-group">
-                      <input type="text" id="folioreporte" placeholder="Escribe el folio de reporte" class="form-control" onkeypress="return onlyNumberKey(event)">
-                      <div class="input-group-append">
-                          <button class="btn btn-secondary" type="button" onclick="buscareporte()">
-                              <i class="fa fa-search"></i>
-                          </button>
+            <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="tab-reportes-fecha" data-toggle="tab" href="#nav-repfecha"
+                role="tab" aria-controls="home" aria-selected="true">Filtrar reportes por fecha y tipo</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="tab-reportes-folio" data-toggle="tab" href="#nav-repfolio" 
+                role="tab" aria-controls="profile" aria-selected="false">Buscar reporte por folio y tipo</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane fade show active" id="nav-repfecha" role="tabpanel" aria-labelledby="reportes-fecha">
+                  <div class="row mt-4">
+                    <div class="col-md-3 form-group mt-1">
+                      <h5>Fecha inicial</h5>
+                      <input type="date" id="fecha1" onchange="consultareportes()">
+                    </div>
+                    <div class="col-md-3 form-group mt-1">
+                      <h5>Fecha límite</h5>
+                      <input type="date" id="fecha2" onchange="consultareportes()">
+                    </div>
+                    <div class="col-md-3 form-group mt-1">
+                      <h5>Tipo de reportes</h5>
+                      <select id="tiporeportemodal" class="form-control" onchange="consultareportes()">
+                        <option selected value="seleccionar">Seleccionar...</option>
+                        <option>Kiosko</option>
+                        <option>Vending</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3 d-flex justify-content-end form-group mt-2">
+                      <button class="btn btn-danger" onclick="consultareportes()" id="refrescareportes"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+              </div>
+                <div class="tab-pane fade" id="nav-repfolio" role="tabpanel" aria-labelledby="reportes-folio">
+                  <div class="row mt-4">
+                    <div class="col-md-4">
+                      <h5>Buscar reporte</h5>
+                      <div class="input-group">
+                        <input type="text" id="folioreporte" placeholder="Escribe el folio de reporte" class="form-control" onkeypress="return onlyNumberKey(event)">
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="button" onclick="buscareporte()">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-md-4 form-group">
-                    <h5>Tipo de reporte</h5>
-                    <select id="tiporeportefolio" class="form-control" onchange="buscareporte()">
-                      <option selected value="seleccionar">Seleccionar...</option>
-                      <option>Kiosko</option>
-                      <option>Vending</option>
-                    </select>
+                    <div class="col-md-4 form-group">
+                      <h5>Tipo de reporte</h5>
+                      <select id="tiporeportefolio" class="form-control" onchange="buscareporte()">
+                        <option selected value="seleccionar">Seleccionar...</option>
+                        <option>Kiosko</option>
+                        <option>Vending</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        <div class="modal-body" style="padding:0;" id="modalbodyreportes">
+          <div class="container" style="min-width: 98%;">
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <table class="table table-responsive-lg">
+                  <thead id="headtabla">
+                      <tr class="inform">
+                        <th scope="col">Folio</th>
+                        <th scope="col">Punto de venta</th>
+                        <th scope="col">Fecha del reporte</th>
+                        <th scope="col">Telefono</th>
+                        <th scope="col">Estatus</th>
+                        <th scope="col">Persona que reportó</th>
+                        <th scope="col">Observaciones</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="bodytabla">
+                      
+                    </tbody>
+                </table>
+            </div>
         </div>
-      <div class="modal-body" style="padding:0;" id="modalbodyreportes">
-        <div class="container" style="min-width: 98%;">
-        <div class="row mt-4">
-          <div class="col-md-12">
-            <table class="table table-responsive-lg">
-                <thead id="headtabla">
-                    <tr class="inform">
-                      <th scope="col">Folio</th>
-                      <th scope="col">Punto de venta</th>
-                      <th scope="col">Fecha del reporte</th>
-                      <th scope="col">Telefono</th>
-                      <th scope="col">Estatus</th>
-                      <th scope="col">Persona que reportó</th>
-                      <th scope="col">Observaciones</th>
-                      <th scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="bodytabla">
-                    
-                  </tbody>
-              </table>
-          </div>
+        </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="botonmodalreportes" style="color:white" onclick="continuarcapturarep()">Continuar</button>
       </div>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary" id="botonmodalreportes" style="color:white" onclick="continuarcapturarep()">Continuar</button>
+  </div>
+</div>
+<!--Modal para exportar reportes a Excel-->
+<div class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" id="exportareportesmodal">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Exportar reportes a excel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-8 form-group mt-1">
+          <h5>Escoja el día del cual exportar los reportes</h5>
+          <input type="date" id="fechaexprep">
+        </div>
+        <div class="col-md-2 offset-2" id="spinnerexport">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="exprepexcel()" class="btn btn-primary">Exportar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
     </div>
   </div>
 </div>

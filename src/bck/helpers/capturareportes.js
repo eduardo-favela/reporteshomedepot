@@ -6,7 +6,6 @@ const queries = require('../queries/capturareportes');
 module.exports.getpventas=async(tiporeporte)=>{
     let arraypventas=[]
     let pventas={}
-
     if(tiporeporte==="Vending"){
         pventas= await (await poolvoficiname).query(queries.getpventas)
     }
@@ -106,9 +105,14 @@ module.exports.getreportes=async(params)=>{
     let getreport=await(await pooldwh).query(reportes)
     if(params.tiporeportes==='Kiosko'){
         for (let i = 0; i < getreport.recordset.length; i++) {
-            if(getreport.recordset[i].observaciones.split("-")[0]=="SISTEMAS"||getreport.recordset[i].observaciones.split("-")[0]=="MANTENIMIENTO"){
+            /* if(getreport.recordset[i].observaciones.split("-")[0]=="SISTEMAS"||
+            getreport.recordset[i].observaciones.split("-")[0]=="MANTENIMIENTO") */
+            if(getreport.recordset[i].observaciones.split("&")[1]){
                 //console.log("Reportes que entran en el if de split")
-                getreport.recordset.splice(i,1)
+                //getreport.recordset.splice(i,1)
+                getreport.recordset[i].depto=getreport.recordset[i].observaciones.split("&")[0]
+                getreport.recordset[i].observaciones=getreport.recordset[i].observaciones.split("&")[1]
+                result.reportes.push(getreport.recordset[i])
             }
             else{
                 getreport.recordset[i].puntoventa=getreport.recordset[i].puntoventa.trim()
@@ -147,33 +151,96 @@ module.exports.updateregistro=async(reporte)=>{
     }
     else if(reporte.tiporeporte==="Kiosko"){
         let departamento=reporte.departamento
-        let observaciones=departamento+"-"+reporte.observaciones
-        let updatereportek=queries.updateregistrokiosko
-        .replace('serial',reporte.folio)
-        .replace('nuevasobservaciones',observaciones)
-        let actualizareport=await(await pooldwh).query(updatereportek)
-        return true
+        let estatus=reporte.estatus
+        if(departamento!="SELECCIONAR..."&&estatus!="SELECCIONAR..."){
+            
+            if(estatus=="LIBERADO"){
+                let updatereporte=queries.updateregistro
+                .replace('nuevoestatus',reporte.estatus)
+                .replace('observations',reporte.observaciones2)
+                .replace('serial',reporte.folio)
+                let actualizareporte=await(await pooldwh).query(updatereporte)
+                return true
+            }
+            else{
+                let observaciones=departamento+"&"+reporte.observaciones
+                let updatereportek=queries.updateregistrokiosko
+                .replace('serial',reporte.folio)
+                .replace('nuevasobservaciones',observaciones)
+                let actualizareport=await(await pooldwh).query(updatereportek)
+                return true
+            }
+        }
     }
 }
 
 module.exports.getreportefolio=async(folio)=>{
     let queryreporte=queries.getreportefolio.replace('nofolio',folio.folio)
-    if(folio.tiporeporte=="Vending"){
-        queryreporte=queryreporte.replace('not','').replace('observaciones','observaciones2')
-    }
-    let reporte=await(await pooldwh).query(queryreporte)
-    if(reporte.recordset[0]){
-        let rep=reporte.recordset[0]
-        rep.tiporeporte=folio.tiporeporte
-        let depto=rep.observaciones.split("-")[0]
-        if(depto){
-            return depto
+    let result={}
+    result.tipo=folio.tiporeporte
+    result.reportes=[]
+        if(folio.tiporeporte=="Vending"){
+            queryreporte=queryreporte.replace('not','').replace('observaciones','observaciones2')
+            let reporte=await(await pooldwh).query(queryreporte)
+            if(reporte.recordset[0]){
+                result.reportes.push(reporte.recordset[0])
+                return result
+            }
+            else{
+                return false
+            }
+        }
+        else if(folio.tiporeporte=="Kiosko"){
+            queryreporte=queryreporte.replace('observaciones','observaciones, observaciones2')
+            let reporte=await(await pooldwh).query(queryreporte)
+            if (reporte.recordset[0]){
+                if(reporte.recordset[0].observaciones.split("&")[1]){
+                    //console.log("Reportes que entran en el if de split")
+                    //getreport.recordset.splice(i,1)
+                    reporte.recordset[0].depto=reporte.recordset[0].observaciones.split("&")[0]
+                    reporte.recordset[0].observaciones=reporte.recordset[0].observaciones.split("&")[1]
+                    result.reportes.push(reporte.recordset[0])
+                }
+                else{
+                    reporte.recordset[0].puntoventa=reporte.recordset[0].puntoventa.trim()
+                    result.reportes.push(reporte.recordset[0])
+                }
+                if(reporte.recordset[0].observaciones2!=""){
+                    result.reportes[0].observaciones2=reporte.recordset[0].observaciones2
+                }
+                return result
+            }
+            else{
+                return false
+            }
+    
+        }
+}
+
+module.exports.getdeptosreportes=async(fecha)=>{
+    if(fecha!=""){
+        let fechas={}
+        fechas.fecha1=fecha
+        fechas.fecha2=fecha+" 23:59:00"
+        let queryreporte=queries.getdeptosreportes.replace('fecha1',fechas.fecha1)
+        .replace('fecha2',fechas.fecha2)
+        let reporteresult=await(await pooldwh).query(queryreporte)
+        if(reporteresult.recordset.length>0){
+           return reporteresult.recordset
         }
         else{
-            return rep
+            return false
         }
     }
-    else{
-        return false
-    }
+}
+
+module.exports.getreportesexpexcel=async(fecha,depto)=>{
+    let fechas={}
+    fechas.fecha1=fecha
+    fechas.fecha2=fecha+" 23:59:00"
+    let querygetreportes=queries.getreportsfexcel.replace('fecha1',fechas.fecha1)
+    .replace('fecha2',fechas.fecha2)
+    .replace('depto',depto)
+    let reportesfexcel=await(await pooldwh).query(querygetreportes)
+    return reportesfexcel.recordset
 }
