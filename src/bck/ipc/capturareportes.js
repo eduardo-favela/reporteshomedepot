@@ -57,9 +57,9 @@ ipcMain.on('buscareportefolio',async(event,folio)=>{
 })
 
 ipcMain.on('exportareportesexcel',async(event,fecha)=>{
+    ///////////Consultar departamentos de los cuales hay reportes///////////
     const exportex=await helper.getdeptosreportes(fecha)
-    
-
+    console.log(exportex)
     if(exportex){
          ///////////Se crea el libro de excel///////////
          let wb = new xl.Workbook()
@@ -69,8 +69,11 @@ ipcMain.on('exportareportesexcel',async(event,fecha)=>{
              "Fecha",
              "Telefono",
              "Quien reporta",
+             "Tipo",
+             "Plaza",
              "Estatus",
-             "Observavciones"
+             "Observavciones",
+             "Departamento/Área"
          ]
          const myStyle3 = wb.createStyle({
              font:{
@@ -84,26 +87,31 @@ ipcMain.on('exportareportesexcel',async(event,fecha)=>{
                }
          })
 
+         ///////////Se crea la hoja en el libro de excel///////////
+         let ws=wb.addWorksheet("REPORTES")
+
+         ///////////Se asignan nombres a las columnas de la tabla///////////
+         let headingColumnIndex = 1;
+         headingColumnNames.forEach(heading => {
+            ws.cell(1, headingColumnIndex++)
+                .style(myStyle3)
+                .string(heading)
+         })
+         let deptos=[]
          for (let i = 0; i < exportex.length; i++) {
-             
-             ///////////Se crea la hoja en el libro de excel///////////
-             let ws=wb.addWorksheet(exportex[i].depto)
-
-             ///////////Se asignan nombres a las columnas de la tabla///////////
-             let headingColumnIndex = 1;
-             headingColumnNames.forEach(heading => {
-                 ws.cell(1, headingColumnIndex++)
-                     .style(myStyle3)
-                     .string(heading)
-             })
-             
-             ///////////Se consultan los reportes de cada departamento///////////
-             let reportesfexcel=await helper.getreportesexpexcel(fecha,exportex[i].depto)
-
+             deptos.push(exportex[i].depto)
+         }
+         console.log(deptos)
+         ///////////Se consultan los reportes que tienen asignado un departamento///////////
+         let reportesfexcel = await helper.getreportesexpexcel(fecha,deptos)
+         console.log(reportesfexcel)
+         for (let i = 0; i < exportex.length; i++) {
+             //console.log(reportesfexcel)
              let rowIndex = 2
+             ///////////Se escriben las filas/registros en la hoja de excel///////////
              reportesfexcel.forEach( record => {
                  let columnIndex = 1
-                 Object.keys(record ).forEach(columnName =>{
+                 Object.keys(record).forEach(columnName =>{
                      ws.cell(rowIndex,columnIndex++)
                          .string(record [columnName])
                  })
@@ -117,13 +125,13 @@ ipcMain.on('exportareportesexcel',async(event,fecha)=>{
          }
          wb.write(dir+'/'+fecha+'.xlsx', function(err, stats) {
              if (err) {
-               event.reply('exportareportesexcelresult',false)
+               event.reply('exportareportesexcelresult',{respuesta:false,error:"Error al guardar el archivo"})
              } else {
-               event.reply('exportareportesexcelresult',true)
+               event.reply('exportareportesexcelresult',{respuesta:true})
              }
            })
     }
     else{
-        event.reply('exportareportesexcelresult',false)
+        event.reply('exportareportesexcelresult',{respuesta:false,error:'No hay reportes con departamento asignado en la fecha especificada'})
     }
 })

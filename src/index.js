@@ -99,7 +99,7 @@ async function ventanaMain() {
         })
         requerirIpc()
         //await eliminararchivo()
-        //mainwindow.webContents.openDevTools()
+        /* mainwindow.webContents.openDevTools() */
         mainwindow.loadURL(
         url.format({
             pathname: path.join(__dirname, 'frnt/views/capturareportes.html'),

@@ -2,6 +2,7 @@ const poolkpos = require('../cnn/databasekpos');
 const pooldwh = require('../cnn/databasedwh');
 const poolvoficiname = require('../cnn/databasevoficiname');
 const queries = require('../queries/capturareportes');
+const SqlString = require('sqlstring');
 
 module.exports.getpventas=async(tiporeporte)=>{
     let arraypventas=[]
@@ -238,9 +239,7 @@ module.exports.getreportesexpexcel=async(fecha,depto)=>{
     let fechas={}
     fechas.fecha1=fecha
     fechas.fecha2=fecha+" 23:59:00"
-    let querygetreportes=queries.getreportsfexcel.replace('fecha1',fechas.fecha1)
-    .replace('fecha2',fechas.fecha2)
-    .replace('depto',depto)
-    let reportesfexcel=await(await pooldwh).query(querygetreportes)
+    /* console.log(SqlString.format(queries.getreportsfexcel,[fechas.fecha1,fechas.fecha2,depto])) */
+    let reportesfexcel=await(await pooldwh).query(SqlString.format(queries.getreportsfexcel,[fechas.fecha1,fechas.fecha2,depto]))
     return reportesfexcel.recordset
 }

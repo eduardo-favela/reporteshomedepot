@@ -403,16 +403,18 @@ ipcRenderer.on('consultareportesresult',(event,respuesta)=>{
                     de liberación de reporte' class='observacionesliberacion' readonly></textarea>`
                 }
                 else if(r.estatus==="LIBERADO"){
-                    observaciones2=`<p class='observacionesliberacion'>${r.observaciones2}<p>`
+                    observaciones2=`<p class='observacionesliberacion'>${r.observaciones2}</p>`
                 }
                 if(r.depto){
-                    depto=`<p>${r.depto}<p>`
+                    depto=`<p class='departamentoselect'>${r.depto}</p>`
                 }
                 else{
                     depto=`<select id='depto' class='departamentoselect'>                   
                                 <option selected value="seleccionar">Seleccionar...</option>
                                 <option>Sistemas</option>
                                 <option>Mantenimiento</option>
+                                <option>Almacen</option>
+                                <option>Compras</option>
                             </select>`
                 }
                 cont += `<tr>
@@ -454,7 +456,7 @@ ipcRenderer.on('consultareportesresult',(event,respuesta)=>{
                 let updatereporte={}
                 updatereporte.folio=$(this).parent().siblings('td:first').html()
                 updatereporte.observaciones=$(this).parent().closest('td').siblings().find('p.observaciones1').html().toString().toUpperCase()
-                updatereporte.departamento=$(this).parent().closest('td').siblings().find('select.departamentoselect').val().toString().toUpperCase()
+                updatereporte.departamento=(($(this).parent().closest('td').siblings().find('select.departamentoselect').val()) ? ($(this).parent().closest('td').siblings().find('select.departamentoselect').val().toString().toUpperCase()):($(this).parent().closest('td').siblings().find('p.departamentoselect').html().toString().toUpperCase()))
                 updatereporte.estatus=$(this).parent().closest('td').siblings().find('select.estatusreporteselect').val().toString().toUpperCase()
                 updatereporte.tiporeporte="Kiosko"
                 updatereporte.observaciones2=$(this).parent().closest('td').siblings().find('textarea.observacionesliberacion').val()
@@ -512,16 +514,17 @@ ipcRenderer.on('exportareportesexcelresult',(event,respuesta)=>{
     let bodymodal=$("#modalbody");
     bodymodal.empty()
     console.log(respuesta)
-    if(respuesta){
+    if(respuesta.respuesta){
         let contentconfirmed=`<h5>El archivo se generó correctamente</h5>
         <i class="fa fa-check-circle" aria-hidden="true"></i>`
         bodymodal.append(contentconfirmed)
+        $("#titulomodal").text("Operación exitosa")
         let botonmodal=$("#botonmodal")
         botonmodal.removeClass('btn-warning')
         botonmodal.addClass('btn-success')
     }
     else{
-        let contenterror=`<h5>Ocurrió un error al generar el archivo</h5>
+        let contenterror=`<h5>${respuesta.error}</h5>
         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>`
         bodymodal.append(contenterror)
         $("#titulomodal").text("Error")

@@ -60,8 +60,8 @@ FROM reporteservicio
 where fechatomarep between 'fecha1' and 'fecha2') a where depto <> '' group by depto`
 
 module.exports.getreportsfexcel=`SELECT convert (varchar(10),folio) as folio, (pventa+' - '+nombre) puntoventa,
-CONVERT(VARCHAR(10), fechatomarep, 103) AS [fechatomarep], telefono,quienreporta,estatus,
+CONVERT(VARCHAR(10), fechatomarep, 103) AS [fechatomarep], telefono,quienreporta,tipomaq as tipo,plaza, estatus,
 SUBSTRING(reporteservicio.observaciones,CHARINDEX('&',reporteservicio.observaciones)+1, 
-len(reporteservicio.observaciones)) observaciones
-from reporteservicio where fechatomarep between'fecha1' and 'fecha2' and
-SUBSTRING(reporteservicio.observaciones,0,CHARINDEX('&',reporteservicio.observaciones,0))='depto'`
+len(reporteservicio.observaciones)) observaciones, SUBSTRING(reporteservicio.observaciones,0,CHARINDEX('&',reporteservicio.observaciones,0)) as depto
+from reporteservicio where fechatomarep between ? and ? and
+SUBSTRING(reporteservicio.observaciones,0,CHARINDEX('&',reporteservicio.observaciones,0)) in (?)`
